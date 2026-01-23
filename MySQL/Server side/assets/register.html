@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D&D Register</title>
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<div class="auth-container">
+    <h1>Create Account</h1>
+
+    <input id="username" type="text" placeholder="Username" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <input id="password" type="password" placeholder="Password (8+ chars)" maxlength="72" required>
+
+    <button id="registerBtn">Register</button>
+
+    <p id="error" class="error"></p>
+    <p id="success" class="success"></p>
+
+    <p>
+        Already have an account?
+        <a href="/assets/login.html">Login here</a>
+    </p>
+</div>
+
+<script type="module" src="/assets/api.js"></script>
+<script type="module" src="/assets/auth.js"></script>
+
+</body>
+</html>

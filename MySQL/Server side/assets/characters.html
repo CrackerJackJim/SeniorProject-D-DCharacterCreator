@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Characters</title>
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<div class="page-container">
+
+    <header class="top-bar">
+        <h1>Your Characters</h1>
+        <button id="logoutBtn" class="logout-button">Logout</button>
+    </header>
+
+    <div id="characterList" class="character-list">
+        <p>Loading your characters...</p>
+    </div>
+
+    <button id="createBtn" class="primary-button">
+        Create New Character
+    </button>
+
+</div>
+
+<script type="module">
+    // ---------------------------------------------------------
+    // AUTH CHECK
+    // ---------------------------------------------------------
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+        // Not logged in at all
+        window.location.href = "/assets/login.html";
+    }
+
+    if (user.guest) {
+        // Guests skip character list entirely
+        window.location.href = "/assets/create_character.html";
+    }
+
+    // ---------------------------------------------------------
+    // LOAD CHARACTERS FOR REGISTERED USER
+    // ---------------------------------------------------------
+    import { apiRequest } from "/assets/api.js";
+
+    const listContainer = document.getElementById("characterList");
+    const createBtn = document.getElementById("createBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    async function loadCharacters() {
+        try {
+            const characters = await apiRequest(`/characters/${user.user_id}`, "GET");
+
+            if (!characters || characters.length === 0) {
+                listContainer.innerHTML = `
+                    <p>You have no characters yet.</p>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = "";
+
+            characters.forEach(char => {
+                const div = document.createElement("div");
+                div.className = "character-card";
+
+                div.innerHTML = `
+                    <h2>${char.name}</h2>
+                    <p>Level ${char.level} ${char.race} ${char.class}</p>
+                    <button class="open-btn" data-id="${char.id}">Open</button>
+                `;
+
+                listContainer.appendChild(div);
+            });
+
+            // Attach open handlers
+            document.querySelectorAll(".open-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = btn.getAttribute("data-id");
+                    window.location.href = `/assets/character_sheet.html?id=${id}`;
+                });
+            });
+
+        } catch (err) {
+            listContainer.innerHTML = `<p class="error">Failed to load characters.</p>`;
+        }
+    }
+
+    loadCharacters();
+
+    // ---------------------------------------------------------
+    // CREATE NEW CHARACTER
+    // ---------------------------------------------------------
+    createBtn.addEventListener("click", () => {
+        window.location.href = "/assets/create_character.html";
+    });
+
+    // ---------------------------------------------------------
+    // LOGOUT
+    // ---------------------------------------------------------
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "/assets/login.html";
+    });
+</script>
+
+</body>
+</html>
