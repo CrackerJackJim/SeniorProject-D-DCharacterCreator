@@ -5,7 +5,7 @@ from services.auth import register_user, login_user
 # -------------------------------------------------
 # ROUTER INSTANCE
 # -------------------------------------------------
-router = APIRouter(prefix="/api", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 # -------------------------------------------------
 # REGISTER
