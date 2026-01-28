@@ -1,38 +1,30 @@
-from fastapi import APIRouter, HTTPException
-from services.character_recalc import recalc_character
-from services.characters import get_characters_for_user, get_character
-from models.auth_models import RegisterRequest, LoginRequest, LoginResponse
+from fastapi import APIRouter
+from database import fetch_one, fetch_all, execute
 
 router = APIRouter()
 
-
-# -----------------------------
-# LIST CHARACTERS FOR USER
-# -----------------------------
 @router.get("/characters/{user_id}")
-def list_characters(user_id: int):
-    chars = get_characters_for_user(user_id)
-    return {"characters": chars}
+def get_characters_for_user(user_id: int):
+    return db.fetch_all("""
+        SELECT *
+        FROM characters
+        WHERE account_id = %s
+    """, (user_id,))
 
-
-# -----------------------------
-# GET SINGLE CHARACTER
-# -----------------------------
 @router.get("/character/{char_id}")
-def get_single_character(char_id: int):
-    char = get_character(char_id)
-    if not char:
-        raise HTTPException(status_code=404, detail="Character not found")
-    return char
+def get_character(char_id: int):
+    return db.fetch_one("""
+        SELECT *
+        FROM characters
+        WHERE id = %s
+    """, (char_id,))
 
-
-# -----------------------------
-# RECALCULATE CHARACTER
-# -----------------------------
-@router.post("/characters/{char_id}/recalc")
-def recalc(char_id: int):
-    try:
-        result = recalc_character(char_id)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/characters/{char_id}/touch")
+def touch_character(char_id: int):
+    db.execute("""
+        UPDATE characters
+        SET last_edited = NOW()
+        WHERE id = %s
+    """, (char_id,))
+    db.commit()
+    return {"status": "ok"}
