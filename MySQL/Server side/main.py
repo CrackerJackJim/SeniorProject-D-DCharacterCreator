@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from routers.fonts_router import router as fonts_router
 
 # -----------------------------
 # IMPORT ROUTERS
@@ -36,6 +37,9 @@ app.mount("/assets", StaticFiles(directory="Z:/DnD_Final_Project/MySQL/Server si
 # -----------------------------
 app.include_router(auth_router, prefix="/api")
 app.include_router(character_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
+app.include_router(character_router, prefix="/api")
+app.include_router(fonts_router)  # no prefix needed
 
 # -----------------------------
 # ROOT REDIRECT TO LOGIN PAGE

@@ -2,12 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Character</title>
+    <title>Character Creation</title>
     <link rel="stylesheet" href="/assets/style.css">
 </head>
-<body>
+<body class="character-creation-body">
 
-<h1>You made it to the Character Creation page</h1>
+    <!-- TASK BAR -->
+    <div class="taskbar">
+        <button id="settingsBtn" class="settings-button">Settings</button>
+    </div>
+
+    <!-- CHARACTER CREATION AREA -->
+    <div class="character-creation-container">
+        <!-- Future character sheet content will go here -->
+    </div>
+
+    <!-- SETTINGS OVERLAY -->
+    <div id="settingsOverlay" class="settings-overlay">
+        <div class="settings-menu">
+            <div class="settings-left">
+                <div class="settings-title">
+                    <h2>Settings</h2>
+                </div>
+            </div>
+            <div class="settings-right">
+                <div class="settings-button-stack">
+                    <button id="changeFontBtn" class="settings-option">Change Font</button>
+                    <button id="logoutBtn" class="settings-option">Logout</button>
+                    <button id="closeSettingsBtn" class="settings-exit">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- FONT MENU OVERLAY -->
+    <div id="fontMenuOverlay" class="settings-overlay">
+        <div class="font-menu">
+            <div class="font-menu-inner">
+                <h2 class="font-menu-title">Choose Font</h2>
+
+                <div id="fontList" class="font-list"></div>
+
+                <div class="font-menu-buttons">
+                    <button id="applyFontBtn" class="settings-option">Apply</button>
+                    <button id="closeFontMenuBtn" class="settings-exit">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INLINE SCRIPT -->
+    <script>
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsOverlay = document.getElementById("settingsOverlay");
+    const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const changeFontBtn = document.getElementById("changeFontBtn");
+
+    // OPEN SETTINGS MENU
+    settingsBtn.addEventListener("click", () => {
+        settingsOverlay.style.display = "flex";
+    });
+
+    // CLOSE SETTINGS MENU
+    closeSettingsBtn.addEventListener("click", () => {
+        settingsOverlay.style.display = "none";
+    });
+
+    // LOGOUT BUTTON
+    logoutBtn.addEventListener("click", () => {
+        window.location.href = "/assets/login.html";
+    });
+
+    // OPEN FONT MENU (FINAL VERSION — replaces placeholder)
+    changeFontBtn.addEventListener("click", () => {
+        loadFontList();
+        document.getElementById("fontMenuOverlay").style.display = "flex";
+    });
+
+    // CLOSE FONT MENU
+    document.getElementById("closeFontMenuBtn").addEventListener("click", () => {
+        document.getElementById("fontMenuOverlay").style.display = "none";
+    });
+
+    // APPLY FONT
+    document.getElementById("applyFontBtn").addEventListener("click", () => {
+        if (!selectedFont) return;
+
+        localStorage.setItem("selectedFont", selectedFont);
+        applyFontToPage(selectedFont);
+
+        document.getElementById("fontMenuOverlay").style.display = "none";
+    });
+
+    // GLOBAL FONT VARIABLE
+    let selectedFont = null;
+
+    // LOAD FONTS FROM SERVER
+    function loadFontList() {
+        fetch("/fonts")
+            .then(res => res.json())
+            .then(fonts => {
+                const list = document.getElementById("fontList");
+                list.innerHTML = "";
+
+                fonts.forEach(font => {
+                    const item = document.createElement("div");
+                    item.classList.add("font-item");
+                    item.textContent = font.replace(".ttf", "").replace(".otf", "");
+
+                    item.style.fontFamily = item.textContent;
+
+                    item.addEventListener("click", () => {
+                        document.querySelectorAll(".font-item").forEach(i => i.classList.remove("selected"));
+                        item.classList.add("selected");
+                        selectedFont = item.textContent;
+                    });
+
+                    list.appendChild(item);
+                });
+            });
+    }
+
+    // APPLY FONT TO ENTIRE PAGE
+    function applyFontToPage(fontName) {
+        document.documentElement.style.setProperty("--global-font", fontName);
+    }
+
+    // APPLY SAVED FONT ON PAGE LOAD
+    window.addEventListener("load", () => {
+        const saved = localStorage.getItem("selectedFont");
+        if (saved) applyFontToPage(saved);
+    });
+</script>
 
 </body>
 </html>

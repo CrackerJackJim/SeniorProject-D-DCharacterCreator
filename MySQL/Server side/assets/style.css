@@ -1,14 +1,46 @@
 @font-face {
+    font-family: 'AngelBanditRegular';
+    src: url('/assets/Fonts/AngelBanditRegular.ttf') format('truetype');
+    size-adjust: 70%;
+}
+
+@font-face {
+    font-family: 'Coming Sans';
+    src: url('/assets/Fonts/Coming Sans.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Firlest-Regular';
+    src: url('/assets/Fonts/Firlest-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Gondens DEMO';
+    src: url('/assets/Fonts/Gondens.otf') format('opentype');
+}
+
+@font-face {
     font-family: 'PfefferMediaeval';
-    src: url('fonts/PfefferMediaeval.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+    src: url('/assets/Fonts/PfefferMediaeval.otf') format('opentype');
+}
+
+.font-item[style*="AngelBanditRegular"] {
+    font-size: 14px !important;   /* much smaller */
+    line-height: 18px;            /* keeps spacing clean */
+}
+
+:root {
+    --global-font: 'PfefferMediaeval';
+}
+
+body, button, input, h1, h2, h3, h4, h5, h6, p, div, span {
+    font-family: var(--global-font), serif;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     background: url('images/Background.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #2b1d0f;
@@ -43,7 +75,7 @@ body {
     padding: 12px;
     margin: 12px 0;
     font-size: 18px;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 12px;
@@ -62,7 +94,7 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     transition: background-color 0.3s ease;
 }
 
@@ -207,7 +239,7 @@ input:-webkit-autofill:active {
     height: 350px;
     cursor: pointer;
     transition: transform 0.2s ease;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     color: #2b1d0f;
 }
 
@@ -234,7 +266,7 @@ input:-webkit-autofill:active {
     border: none;
     color: #3e2a14;
     font-size: 18px;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     cursor: pointer;
     margin-top: 8px;
     text-decoration: underline;
@@ -272,7 +304,7 @@ input:-webkit-autofill:active {
     padding: 12px;
     margin: 12px 0;
     font-size: 18px;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 12px;
@@ -291,7 +323,7 @@ input:-webkit-autofill:active {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     transition: background-color 0.3s ease;
 }
 
@@ -337,7 +369,7 @@ input:-webkit-autofill:active {
     padding: 12px;
     margin: 12px 0;
     font-size: 18px;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 12px;
@@ -356,10 +388,229 @@ input:-webkit-autofill:active {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'PfefferMediaeval', serif;
+    font-family: var(--global-font), serif;
     transition: background-color 0.3s ease;
 }
 
 .submenu button:hover {
     background-color: #a9743a;
+}
+
+/* Character creation page background */
+.character-creation-body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--global-font), serif;
+    background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #2b1d0f;
+}
+
+.taskbar {
+    width: 100%;
+    height: 70px;
+    background-color: #8b5a2b;
+    border-bottom: 4px solid #5a3e1b;
+    padding: 10px 25px;
+
+    display: flex;
+    align-items: center;      /* keep */
+    /* remove justify-content if present */
+    /* justify-content: flex-end; */
+}
+
+.settings-button {
+    margin-left: auto;        /* pushes it to the right, but inside the bar */
+    margin-right: 40px;       /* pulls it away from the edge */
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: var(--global-font), serif;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    /* make sure there is NO transform here */
+    /* remove: transform: translateX(...); */
+}
+
+.settings-button:hover {
+    background-color: #d6c49a;
+}
+
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none; /* hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.settings-menu {
+    width: 1400px;
+    height: 850px;
+    background: url('images/Book_menu_background.png') no-repeat center center;
+    background-size: 100% 100%;
+    padding: 60px;
+    display: flex;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
+
+.settings-left {
+    width: 50%;
+    position: relative;
+}
+
+.settings-title {
+    position: absolute;
+    top: 40px;
+    left: 60%;              /* was 65%, now nudged left */
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.settings-title h2 {
+    font-size: 48px;
+    font-family: var(--global-font), serif;
+    color: #2b1d0f;
+    margin: 0;
+}
+
+.settings-right {
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.settings-button-stack {
+    position: absolute;
+    left: 40%;              /* was 35%, now nudged right */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.settings-button-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.settings-menu h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #2b1d0f;
+    font-family: var(--global-font), serif;
+}
+
+.settings-option,
+.settings-exit {
+    width: 200px;
+    padding: 10px;
+    font-size: 20px;
+    background-color: #8b5a2b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--global-font), serif;
+    transition: background-color 0.3s ease;
+}
+
+.settings-option:hover,
+.settings-exit:hover {
+    background-color: #a9743a;
+}
+
+.settings-button-group {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+/* Main character creation area (transparent over background) */
+.character-creation-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* Font menu */
+
+.font-menu {
+    width: 1300px;                         /* big parchment */
+    height: 900px;
+    background: url('images/Menu_background.png') no-repeat center center;
+    background-size: 100% 100%;            /* fill this big area */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.font-menu-inner {
+    width: 700px;          /* was 850px */
+    height: 520px;         /* was 650px */
+    padding: 50px;         /* slightly reduced */
+    margin-left: 10px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.font-menu-title {
+    font-size: 42px;
+    margin-bottom: 30px;
+    font-family: var(--global-font), serif;
+}
+
+.font-list {
+    width: 80%;
+    height: 450px;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.6);
+    border: 2px solid #5a3e1b;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.font-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 22px;
+    transition: 0.2s ease;
+}
+
+.font-item:hover {
+    background-color: #d6c49a;
+}
+
+.font-item.selected {
+    background-color: #8b5a2b;
+    color: white;
+}
+
+.font-menu-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
 }
