@@ -41,14 +41,19 @@ def login_user(identifier: str, password: str):
         (identifier, identifier)
     )
 
+    print("DEBUG USER ROW:", user)   # <--- ADD THIS
+
     if not user:
         raise ValueError("Invalid username or email")
 
-    if not bcrypt.verify(password[:72], user["PasswordHash"]):
+    # Normalize keys to lowercase
+    user = {k.lower(): v for k, v in user.items()}
+
+    if not bcrypt.verify(password[:72], user["passwordhash"]):
         raise ValueError("Incorrect password")
 
     return {
-        "id": user["AccountID"],
-        "username": user["Username"],
-        "email": user["Email"]
+        "id": user["accountid"],
+        "username": user["username"],
+        "email": user["email"]
     }

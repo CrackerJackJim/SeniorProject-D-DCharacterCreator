@@ -14,7 +14,10 @@
     <input id="password" type="password" placeholder="Password" required>
 
     <button id="loginBtn">Login</button>
-    <button id="guestBtn">Continue as Guest</button>
+
+    <button id="forgotPasswordBtn" class="link-button">Forgot Password?</button>
+
+    <button id="guestBtn" class="link-button">Continue as Guest</button>
 
     <p id="error" class="error"></p>
 
@@ -24,8 +27,33 @@
     </p>
 </div>
 
-<script type="module" src="/assets/api.js"></script>
-<script type="module" src="/assets/auth.js"></script>
+<script type="module">
+    import { apiRequest } from "/assets/api.js";
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+        const identifier = document.getElementById("identifier").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const result = await apiRequest("/login", "POST", { identifier, password });
+
+        if (!result.user_id) {
+            document.getElementById("error").textContent = "Invalid username or password.";
+            return;
+        }
+
+        localStorage.setItem("user", JSON.stringify(result));
+        window.location.href = "/assets/characters.html";
+    });
+
+    document.getElementById("forgotPasswordBtn").addEventListener("click", () => {
+        window.location.href = "/assets/password_reset.html";
+    });
+
+    document.getElementById("guestBtn").addEventListener("click", () => {
+        localStorage.setItem("user", JSON.stringify({ guest: true }));
+        window.location.href = "/assets/characters.html";
+    });
+</script>
 
 </body>
 </html>

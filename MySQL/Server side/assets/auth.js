@@ -1,5 +1,7 @@
 import { registerUser, loginUser } from "./api.js";
 
+console.log("LOGIN JS LOADED");
+
 // -----------------------------------------------------
 // LOGIN
 // -----------------------------------------------------
