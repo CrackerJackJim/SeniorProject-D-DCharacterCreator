@@ -1,56 +1,61 @@
-from database import fetch_one, fetch_all, execute, get_db
-from passlib.hash import bcrypt
+import bcrypt
+from database.core import fetch_one, fetch_all, execute
+from passlib.hash import bcrypt as passlib_bcrypt
 
 # -----------------------------
-# REGISTER USER
+# REGISTER USER (ASYNC + FIXED)
 # -----------------------------
-def register_user(username: str, email: str, password: str) -> int:
+async def register_user(username: str, email: str, password: str) -> int:
     if len(username) < 3:
         raise ValueError("Username must be at least 3 characters long")
     if len(password) < 8:
         raise ValueError("Password must be at least 8 characters long")
 
-    existing = fetch_one(
+    # MUST be awaited
+    existing = await fetch_one(
         "SELECT AccountID FROM account WHERE Username = %s OR Email = %s",
         (username, email)
     )
     if existing:
         raise ValueError("Username or email is already in use")
 
-    hashed = bcrypt.hash(password[:72])
+    # Hash password
+    hashed = passlib_bcrypt.hash(password[:72])
 
-    execute(
+    # MUST be awaited
+    await execute(
         "INSERT INTO account (Username, Email, PasswordHash) VALUES (%s, %s, %s)",
         (username, email, hashed)
     )
 
-    row = fetch_one(
+    # MUST be awaited
+    row = await fetch_one(
         "SELECT AccountID FROM account WHERE Email = %s",
         (email,)
     )
 
     return row["AccountID"] if row else None
 
-# -----------------------------
-# LOGIN USER
-# -----------------------------
-def login_user(identifier: str, password: str):
-    user = fetch_one(
-        "SELECT AccountID, Username, Email, PasswordHash FROM account "
-        "WHERE Username = %s OR Email = %s",
-        (identifier, identifier)
-    )
 
-    print("DEBUG USER ROW:", user)   # <--- ADD THIS
+# -----------------------------
+# LOGIN USER (already async)
+# -----------------------------
+async def login_user(identifier, password):
+    query = """
+        SELECT *
+        FROM account
+        WHERE Username = %s OR Email = %s
+    """
+
+    user = await fetch_one(query, (identifier, identifier))
 
     if not user:
-        raise ValueError("Invalid username or email")
+        return None
 
-    # Normalize keys to lowercase
     user = {k.lower(): v for k, v in user.items()}
 
-    if not bcrypt.verify(password[:72], user["passwordhash"]):
-        raise ValueError("Incorrect password")
+    if not bcrypt.checkpw(password.encode(), user["passwordhash"].encode()):
+        return None
 
     return {
         "id": user["accountid"],

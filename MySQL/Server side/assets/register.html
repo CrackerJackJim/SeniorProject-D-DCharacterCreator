@@ -26,7 +26,57 @@
 </div>
 
 <script type="module" src="/assets/api.js"></script>
-<script type="module" src="/assets/auth.js"></script>
+
+<script type="module">
+    import { apiRequest } from "/assets/api.js";
+
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const registerBtn = document.getElementById("registerBtn");
+
+    const errorEl = document.getElementById("error");
+    const successEl = document.getElementById("success");
+
+    registerBtn.addEventListener("click", async () => {
+        errorEl.textContent = "";
+        successEl.textContent = "";
+
+        const username = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!username || !email || !password) {
+            errorEl.textContent = "All fields are required.";
+            return;
+        }
+
+        try {
+            const result = await apiRequest("/register", "POST", {
+                username,
+                email,
+                password
+            });
+
+            localStorage.setItem("user", JSON.stringify({
+                id: result.user_id,
+                username: result.username,
+                email: result.email
+            }));
+
+            localStorage.setItem("account_id", result.user_id);
+
+            successEl.textContent = "Account created! Redirecting...";
+
+            setTimeout(() => {
+                window.location.href = "/assets/characters.html";
+            }, 800);
+
+        } catch (err) {
+            errorEl.textContent = err.message || "Registration failed.";
+        }
+    });
+</script>
 
 </body>
 </html>

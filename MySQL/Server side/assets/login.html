@@ -30,19 +30,42 @@
 <script type="module">
     import { apiRequest } from "/assets/api.js";
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
+    const loginBtn = document.getElementById("loginBtn");
+    const errorEl = document.getElementById("error");
+
+    loginBtn.addEventListener("click", async () => {
+        errorEl.textContent = "";
+
         const identifier = document.getElementById("identifier").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        const result = await apiRequest("/login", "POST", { identifier, password });
-
-        if (!result.user_id) {
-            document.getElementById("error").textContent = "Invalid username or password.";
+        if (!identifier || !password) {
+            errorEl.textContent = "Please enter both fields.";
             return;
         }
 
-        localStorage.setItem("user", JSON.stringify(result));
-        window.location.href = "/assets/characters.html";
+        try {
+            const result = await apiRequest("/login", "POST", {
+                identifier,
+                password
+            });
+
+            // Store user info
+            localStorage.setItem("user", JSON.stringify({
+                id: result.user_id,
+                username: result.username,
+                email: result.email
+            }));
+
+            // ⭐ CRITICAL FIX ⭐
+            // This is what your character creation backend requires.
+            localStorage.setItem("account_id", result.user_id);
+
+            window.location.href = "/assets/characters.html";
+
+        } catch (err) {
+            errorEl.textContent = err.message || "Login failed.";
+        }
     });
 
     document.getElementById("forgotPasswordBtn").addEventListener("click", () => {
@@ -50,7 +73,12 @@
     });
 
     document.getElementById("guestBtn").addEventListener("click", () => {
+        const tempGuestId = "guest_" + crypto.randomUUID();
+
         localStorage.setItem("user", JSON.stringify({ guest: true }));
+        localStorage.setItem("account_id", tempGuestId);
+        localStorage.setItem("is_guest", "true");
+
         window.location.href = "/assets/characters.html";
     });
 </script>

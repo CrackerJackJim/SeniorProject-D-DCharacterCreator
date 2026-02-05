@@ -1,22 +1,17 @@
 @font-face {
-    font-family: 'AngelBanditRegular';
-    src: url('/assets/Fonts/AngelBanditRegular.ttf') format('truetype');
-    size-adjust: 70%;
+    font-family: 'ComicSans';
+    src: url('/assets/Fonts/Comic Sans.otf') format('opentype');
 }
 
 @font-face {
-    font-family: 'Coming Sans';
-    src: url('/assets/Fonts/Coming Sans.otf') format('opentype');
-}
-
-@font-face {
-    font-family: 'Firlest-Regular';
+    font-family: 'Firlest';
     src: url('/assets/Fonts/Firlest-Regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Gondens DEMO';
+    font-family: 'Gondens';
     src: url('/assets/Fonts/Gondens.otf') format('opentype');
+    size-adjust: 90%;   /* shrink to 60% of normal size */
 }
 
 @font-face {
@@ -24,13 +19,8 @@
     src: url('/assets/Fonts/PfefferMediaeval.otf') format('opentype');
 }
 
-.font-item[style*="AngelBanditRegular"] {
-    font-size: 14px !important;   /* much smaller */
-    line-height: 18px;            /* keeps spacing clean */
-}
-
 :root {
-    --global-font: 'PfefferMediaeval';
+    --global-font: 'PfefferMediaeval', serif;
 }
 
 body, button, input, h1, h2, h3, h4, h5, h6, p, div, span {
@@ -45,6 +35,8 @@ body {
     background-size: cover;
     color: #2b1d0f;
 }
+
+/* ---------------- AUTH + GENERAL UI ---------------- */
 
 .auth-container {
     width: 100%;
@@ -118,9 +110,8 @@ body {
     margin-top: 10px;
 }
 
-/* ---------------------------------------------------------
-   FIX: Prevent white background when tabbing into inputs
---------------------------------------------------------- */
+/* ---------------- INPUT FIXES ---------------- */
+
 .reset-container input:focus,
 .submenu input:focus,
 .auth-container input:focus {
@@ -130,7 +121,6 @@ body {
     box-shadow: 0 0 4px rgba(90, 62, 27, 0.6);
 }
 
-/* Prevent white autofill background in Chrome/WebKit */
 input:-webkit-autofill,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:hover,
@@ -141,9 +131,7 @@ input:-webkit-autofill:active {
     border: 2px solid #5a3e1b !important;
 }
 
-/* ---------------------------------------------------------
-   RESPONSIVE BREAKPOINTS
---------------------------------------------------------- */
+/* ---------------- RESPONSIVE ---------------- */
 
 @media (max-width: 1000px) {
     .auth-container {
@@ -210,9 +198,7 @@ input:-webkit-autofill:active {
     }
 }
 
-/* ---------------------------------------------------------
-   CHARACTER SELECTION MENU
---------------------------------------------------------- */
+/* ---------------- CHARACTER SELECTION ---------------- */
 
 .character-grid {
     display: grid;
@@ -232,34 +218,7 @@ input:-webkit-autofill:active {
     font-size: 28px;
 }
 
-.character-card {
-    background: url('/assets/images/Character_Card_Background.png') no-repeat center center;
-    background-size: 100% 100%;
-    padding: 40px;
-    height: 350px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    font-family: var(--global-font), serif;
-    color: #2b1d0f;
-}
-
-.character-card:hover {
-    transform: scale(1.03);
-}
-
-.card-content h2 {
-    font-size: 32px;
-    margin-bottom: 10px;
-}
-
-.card-content p {
-    font-size: 22px;
-    margin: 4px 0;
-}
-
-/* ---------------------------------------------------------
-   AUTH LINK BUTTONS
---------------------------------------------------------- */
+/* ---------------- LINK BUTTONS ---------------- */
 
 .link-button {
     background: none;
@@ -276,9 +235,7 @@ input:-webkit-autofill:active {
     color: #5a3e1b;
 }
 
-/* ---------------------------------------------------------
-   PASSWORD RESET PAGE + SUBMENU
---------------------------------------------------------- */
+/* ---------------- RESET PAGE ---------------- */
 
 .reset-container {
     width: 100%;
@@ -331,7 +288,8 @@ input:-webkit-autofill:active {
     background-color: #a9743a;
 }
 
-/* SUBMENU OVERLAY */
+/* ---------------- OVERLAYS ---------------- */
+
 .overlay {
     position: fixed;
     top: 0;
@@ -344,7 +302,8 @@ input:-webkit-autofill:active {
     align-items: center;
 }
 
-/* RESET PASSWORD SUBMENU */
+/* ---------------- SUBMENU ---------------- */
+
 .submenu {
     width: 100%;
     max-width: 1400px;
@@ -396,7 +355,8 @@ input:-webkit-autofill:active {
     background-color: #a9743a;
 }
 
-/* Character creation page background */
+/* ---------------- CHARACTER CREATION PAGE ---------------- */
+
 .character-creation-body {
     margin: 0;
     padding: 0;
@@ -407,21 +367,21 @@ input:-webkit-autofill:active {
 }
 
 .taskbar {
-    width: 100%;
-    height: 70px;
-    background-color: #8b5a2b;
-    border-bottom: 4px solid #5a3e1b;
-    padding: 10px 25px;
-
     display: flex;
-    align-items: center;      /* keep */
-    /* remove justify-content if present */
-    /* justify-content: flex-end; */
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    background: #2a2118;
+    border-bottom: 1px solid #4a3a28;
 }
 
 .settings-button {
-    margin-left: auto;        /* pushes it to the right, but inside the bar */
-    margin-right: 40px;       /* pulls it away from the edge */
+    padding: 6px 12px;
+}
+
+.settings-button {
+    margin-left: auto;
+    margin-right: 40px;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 8px;
@@ -430,8 +390,6 @@ input:-webkit-autofill:active {
     font-size: 20px;
     cursor: pointer;
     transition: 0.2s ease;
-    /* make sure there is NO transform here */
-    /* remove: transform: translateX(...); */
 }
 
 .settings-button:hover {
@@ -442,13 +400,13 @@ input:-webkit-autofill:active {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: none; /* hidden by default */
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 20;
+    z-index: 9999;
 }
 
 .settings-menu {
@@ -470,7 +428,7 @@ input:-webkit-autofill:active {
 .settings-title {
     position: absolute;
     top: 40px;
-    left: 60%;              /* was 65%, now nudged left */
+    left: 60%;
     transform: translateX(-50%);
     text-align: center;
 }
@@ -492,26 +450,12 @@ input:-webkit-autofill:active {
 
 .settings-button-stack {
     position: absolute;
-    left: 40%;              /* was 35%, now nudged right */
+    left: 40%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     gap: 30px;
     align-items: center;
-}
-
-.settings-button-row {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 40px;
-}
-
-.settings-menu h2 {
-    font-size: 36px;
-    margin-bottom: 30px;
-    color: #2b1d0f;
-    font-family: var(--global-font), serif;
 }
 
 .settings-option,
@@ -533,14 +477,8 @@ input:-webkit-autofill:active {
     background-color: #a9743a;
 }
 
-.settings-button-group {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 40px;
-}
+/* ---------------- CHARACTER CREATION MENU ---------------- */
 
-/* Main character creation area (transparent over background) */
 .character-creation-container {
     max-width: 1400px;
     margin: 40px auto;
@@ -548,22 +486,277 @@ input:-webkit-autofill:active {
     box-sizing: border-box;
 }
 
-/* Font menu */
+.create-character-menu {
+    background: url('images/Selection.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    width: 900px; /* FIX: bigger */
+    padding: 60px; /* FIX: bigger */
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    font-family: 'PfefferMediaeval', serif;
+    color: #0e0a05; /* FIX: readable */
+    font-size: 22px; /* FIX */
+}
+
+.create-character-title {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: #2b1d0f;
+}
+
+.create-character-menu label {
+    font-size: 24px;
+    margin-top: 20px;
+    color: #2b1d0f;
+}
+
+.create-character-menu input,
+.create-character-menu select {
+    width: 70%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 20px;
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 10px;
+    color: #2b1d0f;
+}
+
+.create-character-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.create-character-buttons button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #8b5a2b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.create-character-buttons button:hover {
+    background-color: #a9743a;
+}
+
+/* ---------------- SIDE INFO PANELS ---------------- */
+
+.side-info-panel {
+    position: absolute;
+    right: 40px;
+    top: 120px;
+    width: 450px;
+    height: 600px;
+    background: url('images/Selection.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    padding: 30px;
+    border-radius: 12px;
+    overflow-y: auto;
+    z-index: 5;
+    display: none;
+}
+
+/* ---------------- FEATS TOGGLE ---------------- */
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #a67c52;
+    border-radius: 34px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #f5deb3;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background-color: #d4b483;
+}
+
+input:checked + .slider:before {
+    transform: translateX(32px);
+}
+
+.feats-toggle-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.feats-toggle-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #3b2b1a;
+    margin-bottom: 6px;
+    user-select: none;
+}
+
+.feats-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.feats-label-left,
+.feats-label-right {
+    font-size: 18px;
+    color: #3b2b1a;
+    font-weight: bold;
+    user-select: none;
+}
+
+/* ---------------- CHARACTER SHEET TABS ---------------- */
+
+/* FIX: High-contrast, parchment-themed tabs */
+.sheet-tab {
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #2b1d0f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+
+.sheet-tab:hover {
+    background-color: #d6c49a;
+    transform: translateY(-2px);
+}
+
+.sheet-tab.active {
+    background-color: #8b5a2b;
+    color: #fffbe8;
+    border-color: #3e2a14;
+}
+
+
+/* FIX: Light parchment panels for readability */
+.tab-panel {
+    display: none;
+    padding: 30px;
+    background: rgba(255, 245, 225, 0.82); /* FIX */
+    border: 2px solid #5a3e1b;
+    border-radius: 10px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.25);
+    color: #0e0a05 !important; /* FIX */
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* FIX: Readable inputs inside tabs */
+.tab-grid input,
+.tab-grid select,
+.tab-grid textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #5a3e1b;
+    background: #c8b48a;
+    color: #2b1d0f;
+    font-size: 18px;
+    font-family: var(--global-font), serif;
+}
+
+.tab-grid input:focus,
+.tab-grid select:focus,
+.tab-grid textarea:focus {
+    outline: none;
+    background: #d6c49a;
+    border-color: #8b5a2b;
+    box-shadow: 0 0 6px rgba(90,62,27,0.6);
+}
+
+.ability-edit-box {
+    background: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    color: #2b1d0f;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
+}
+
+.ability-edit-box input {
+    width: 60px;
+    text-align: center;
+    margin-top: 4px;
+    background: #c8b48a;
+    border: 2px solid #5a3e1b;
+    color: #2b1d0f;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+.ability-edit-box input:focus {
+    background: #fff3d0;
+    border-color: #8b5a2b;
+}
+
+
+.sheet-panel {
+    width: 100%;
+    max-width: 1800px;
+    margin: 40px auto;
+    padding: 80px;
+    background: url('/assets/images/Selection.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    min-height: 1100px;
+    color: #0e0a05 !important;
+    font-size: 24px;
+}
+
+
+/* ---------------- FONT MENU ---------------- */
 
 .font-menu {
-    width: 1300px;                         /* big parchment */
+    width: 1300px;
     height: 900px;
     background: url('images/Menu_background.png') no-repeat center center;
-    background-size: 100% 100%;            /* fill this big area */
+    background-size: 100% 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .font-menu-inner {
-    width: 700px;          /* was 850px */
-    height: 520px;         /* was 650px */
-    padding: 50px;         /* slightly reduced */
+    width: 700px;
+    height: 520px;
+    padding: 50px;
     margin-left: 10px;
     box-sizing: border-box;
 
@@ -589,28 +782,305 @@ input:-webkit-autofill:active {
     border-radius: 10px;
 }
 
-.font-item {
-    padding: 10px;
-    margin-bottom: 10px;
+/* Each font is a real button that previews the font */
+.font-option {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    margin: 6px 0;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 22px;
-    transition: 0.2s ease;
+    color: #2b1d0f;
+    text-align: left;
+    transition: background 0.15s, transform 0.1s;
 }
 
-.font-item:hover {
+.font-option:hover {
     background-color: #d6c49a;
+    transform: scale(1.02);
 }
 
-.font-item.selected {
+.font-option.active {
     background-color: #8b5a2b;
     color: white;
+    border-color: #3e2a14;
 }
 
 .font-menu-buttons {
     margin-top: 30px;
     display: flex;
     gap: 20px;
+}
+
+
+/* Visible editable textboxes for character sheet fields */
+.editable-field {
+    display: inline-block;
+    padding: 6px 10px;
+    min-width: 120px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px solid #5a3e1b;
+    border-radius: 6px;
+    cursor: text;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.editable-field:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.75);
+    border-color: #8b5a2b;
+}
+
+/* save button */
+.settings-button,
+.settings-option,
+.settings-exit {
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: var(--global-font), serif;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: #2b1d0f;
+}
+.settings-button:hover,
+.settings-option:hover,
+.settings-exit:hover {
+    background-color: #d6c49a;
+}
+
+/* ---------------- DELETE BUTTON ---------------- */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* High-contrast readable text for all sheet content */
+.sheet-panel,
+.tab-panel,
+.tab-grid label,
+.tab-grid input,
+.tab-grid select,
+.tab-grid textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #5a3e1b;
+    background: #c8b48a;
+    color: #2b1d0f;
+    font-size: 18px;
+    font-family: var(--global-font), serif;
+}
+.ability-edit-box,
+.ability-edit-box input {
+    color: #0e0a05 !important; /* deep charcoal */
+}
+
+/* Active tab text */
+.sheet-tab.active {
+    color: #fffbe8 !important;
+}
+
+/* Non-active tab text */
+.sheet-tab {
+    color: #1a1208 !important;
+}
+
+.character-sheet-body {
+    background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.taskbar-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.taskbar-buttons button {
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #2b1d0f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: var(--global-font), serif;
+}
+
+.taskbar-buttons button:hover {
+    background-color: #d6c49a;
+}
+
+.taskbar-buttons button,
+.creator-actions button,
+.sheet-tabs button,
+.settings-option,
+.settings-exit {
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #2b1d0f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: var(--global-font), serif;
+}
+
+.taskbar-buttons button:hover,
+.creator-actions button:hover,
+.sheet-tabs button:hover,
+.settings-option:hover,
+.settings-exit:hover {
+    background-color: #d6c49a;
+}
+
+.character-sheet-body {
+    background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.creator-grid input,
+.creator-grid select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #5a3e1b;
+    background: #c8b48a;
+    color: #2b1d0f;
+    font-size: 18px;
+    font-family: var(--global-font), serif;
+}
+
+.taskbar-buttons button,
+.creator-actions button,
+.sheet-tabs button,
+.settings-option,
+.settings-exit {
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #2b1d0f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: var(--global-font), serif;
+}
+
+.taskbar-buttons button:hover,
+.creator-actions button:hover,
+.sheet-tabs button:hover,
+.settings-option:hover,
+.settings-exit:hover {
+    background-color: #d6c49a;
+}
+
+.settings-overlay {
+    z-index: 9000;
+}
+
+.settings-menu {
+    z-index: 9001;
+}
+
+.taskbar {
+    z-index: 9999;
+    position: relative;
+}
+
+.settings-menu {
+    display: none;
+    flex-direction: row;
+}
+
+
+/* --- FINAL CHARACTER CARD STYLE (OVERRIDES EVERYTHING ABOVE) --- */
+
+.character-card {
+    width: 360px;
+    min-height: 220px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    position: relative;
+
+    /* Parchment-style background */
+    background: 
+        radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(0,0,0,0.15), transparent 70%),
+        linear-gradient(135deg, #f7e7c1 0%, #f3d9a6 50%, #e9c98b 100%);
+
+    border: 2px solid #8b5a2b;
+    box-shadow:
+        0 0 6px rgba(0,0,0,0.25),
+        inset 0 0 8px rgba(0,0,0,0.25);
+
+    font-family: 'PfefferMediaeval', serif;
+    color: #3b2a1a;
+}
+
+.character-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    color: #3b2a1a;
+}
+
+.character-info {
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 50px; /* space for buttons */
+}
+
+/* Button container bottom-right */
+.card-buttons {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Shared button style */
+.card-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 2px solid #5a3b1e;
+    background: linear-gradient(#d8b98a, #c9a675);
+    color: #3b2a1a;
+    font-family: 'PfefferMediaeval', serif;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.card-btn:hover {
+    background: linear-gradient(#e6cda3, #d1b485);
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background: linear-gradient(#b86a5a, #9e4f3f);
+    border-color: #5a1e1e;
+    color: #fff;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(#c97a6a, #b05a4a);
+}
+
+/* Character selection grid layout */
+.character-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    width: 100%;
 }

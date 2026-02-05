@@ -70,6 +70,6 @@ if (guestBtn) {
 
         localStorage.setItem("user", JSON.stringify(guestUser));
 
-        window.location.href = "/assets/create_character.html";
+        window.location.href = "/assets/characters.html";
     });
 }

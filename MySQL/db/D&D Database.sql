@@ -120,7 +120,7 @@ CREATE TABLE `background` (
   `Description` text,
   PRIMARY KEY (`BackgroundID`),
   UNIQUE KEY `ux_background_name` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,6 +129,7 @@ CREATE TABLE `background` (
 
 LOCK TABLES `background` WRITE;
 /*!40000 ALTER TABLE `background` DISABLE KEYS */;
+INSERT INTO `background` VALUES (1,'Acolyte','You have spent your life in the service of a temple to a specific god or pantheon of gods. You act as an intermediary between the realm of the holy and the mortal world, performing sacred rites and offering sacrifices in order to conduct worshipers into the presence of the divine. You are not necessarily a cleric – performing sacred rites is not the same thing as channeling divine power.');
 /*!40000 ALTER TABLE `background` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +357,7 @@ CREATE TABLE `class` (
   `Spellcasting` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ClassID`),
   UNIQUE KEY `ux_class_name` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +366,41 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
+INSERT INTO `class` VALUES (1,'Artificer',NULL,0);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `class_spellcasting`
+--
+
+DROP TABLE IF EXISTS `class_spellcasting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `class_spellcasting` (
+  `ClassID` int NOT NULL,
+  `Level` int NOT NULL,
+  `Slots1` int DEFAULT '0',
+  `Slots2` int DEFAULT '0',
+  `Slots3` int DEFAULT '0',
+  `Slots4` int DEFAULT '0',
+  `Slots5` int DEFAULT '0',
+  `Slots6` int DEFAULT '0',
+  `Slots7` int DEFAULT '0',
+  `Slots8` int DEFAULT '0',
+  `Slots9` int DEFAULT '0',
+  PRIMARY KEY (`ClassID`,`Level`),
+  CONSTRAINT `class_spellcasting_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `class_spellcasting`
+--
+
+LOCK TABLES `class_spellcasting` WRITE;
+/*!40000 ALTER TABLE `class_spellcasting` DISABLE KEYS */;
+/*!40000 ALTER TABLE `class_spellcasting` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -522,7 +557,7 @@ CREATE TABLE `race` (
   `Description` text,
   PRIMARY KEY (`RaceID`),
   UNIQUE KEY `ux_race_name` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -531,6 +566,7 @@ CREATE TABLE `race` (
 
 LOCK TABLES `race` WRITE;
 /*!40000 ALTER TABLE `race` DISABLE KEYS */;
+INSERT INTO `race` VALUES (1,'Human','In the reckonings of most worlds, humans are the youngest of the common races, late to arrive on the world scene and short-lived in comparison to dwarves, elves, and dragons. Perhaps it is because of their shorter lives that they strive to achieve as much as they can in the years they are given. Or maybe they feel they have something to prove to the elder races, and that\'s why they build their mighty empires on the foundation of conquest and trade. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.');
 /*!40000 ALTER TABLE `race` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -644,6 +680,43 @@ LOCK TABLES `subclass` WRITE;
 /*!40000 ALTER TABLE `subclass` DISABLE KEYS */;
 /*!40000 ALTER TABLE `subclass` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'Test','dtate9@atu.edu','$2b$12$isYf8kEVwCCA8CT7r6.H1uhuF5hXfawFIZ2/wn5PXCg4dPvkWH.X6','2026-01-21 02:22:56');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'dnd'
+--
+
+--
+-- Dumping routines for database 'dnd'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -654,4 +727,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-20 10:11:05
+-- Dump completed on 2026-02-02 21:12:26
