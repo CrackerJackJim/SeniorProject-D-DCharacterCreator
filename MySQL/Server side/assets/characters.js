@@ -7,31 +7,49 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    const data = await apiGet(`/characters/list/${account_id}`);
+    // Correct API endpoint for your router:
+    // GET /api/characters/account/{account_id}
+    const data = await apiGet(`/api/characters/account/${account_id}`);
+    console.log("CHARACTER DATA RECEIVED:", data);
 
-    if (!data.characters || data.characters.length === 0) {
+    if (!data || data.length === 0) {
         document.getElementById("charList").innerText =
             "No characters found.";
         return;
     }
 
+    // Helper to format timestamps
+    function formatDate(dt) {
+        if (!dt) return "Unknown";
+        const d = new Date(dt);
+        return d.toLocaleString();
+    }
+
     // ---------------------------------------------------------
-    // BUILD CHARACTER CARDS (UPDATED TEMPLATE)
+    // BUILD CHARACTER CARDS (FULLY UPDATED)
     // ---------------------------------------------------------
-    const list = data.characters
+    const list = data
         .map(c => `
             <div class="character-card" data-id="${c.CharacterID}">
                 <h2>${c.Name}</h2>
 
                 <div class="character-info">
                     Level: ${c.Level}<br>
-                    Race ID: ${c.RaceID}<br>
-                    Class ID: ${c.ClassID}
+                    Race ID: ${c.RaceID ?? "Unknown"}<br>
+                    Class ID: ${c.ClassID ?? "Unknown"}<br>
+                    Background ID: ${c.BackgroundID ?? "None"}<br><br>
+
+                    Created: ${formatDate(c.CreatedAt)}<br>
+                    Last Edited: ${formatDate(c.UpdatedAt)}
                 </div>
 
                 <div class="card-buttons">
-                    <a href="/character-sheet?id=${c.CharacterID}" class="card-btn open-btn">Open</a>
-                    <button class="card-btn delete-btn" data-id="${c.CharacterID}">Delete</button>
+                    <a href="/assets/create_character.html?character_id=${c.CharacterID}" 
+                       class="card-btn open-btn">Open</a>
+
+                    <button class="card-btn delete-btn" data-id="${c.CharacterID}">
+                        Delete
+                    </button>
                 </div>
             </div>
         `)
@@ -89,7 +107,9 @@ document.addEventListener("click", async (e) => {
         if (!confirmDelete) return;
 
         try {
-            const result = await apiRequest(`/characters/${charId}/delete`, "DELETE");
+            // Correct delete endpoint:
+            // DELETE /api/characters/{id}/delete
+            const result = await apiRequest(`/api/characters/${charId}/delete`, "DELETE");
 
             if (result.success) {
                 const card = document.querySelector(`.character-card[data-id="${charId}"]`);

@@ -23,7 +23,7 @@ def _create_connection():
         password=DB_PASSWORD,
         database=DB_NAME,
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False  # IMPORTANT: manual commit
+        autocommit=True
     )
 
 
@@ -88,7 +88,7 @@ async def execute(query, params=None):
 
         except Exception as e:
             print("\n" + "="*80)
-            print("🔥 SQL EXECUTION ERROR")
+            print("SQL EXECUTION ERROR")
             print("Error:", e)
             print("Query:")
             print(query)

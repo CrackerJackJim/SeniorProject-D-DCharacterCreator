@@ -11,7 +11,7 @@
 @font-face {
     font-family: 'Gondens';
     src: url('/assets/Fonts/Gondens.otf') format('opentype');
-    size-adjust: 90%;   /* shrink to 60% of normal size */
+    size-adjust: 90%;
 }
 
 @font-face {
@@ -30,7 +30,6 @@ body, button, input, h1, h2, h3, h4, h5, h6, p, div, span {
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--global-font), serif;
     background: url('images/Background.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #2b1d0f;
@@ -67,7 +66,6 @@ body {
     padding: 12px;
     margin: 12px 0;
     font-size: 18px;
-    font-family: var(--global-font), serif;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 12px;
@@ -86,7 +84,6 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: var(--global-font), serif;
     transition: background-color 0.3s ease;
 }
 
@@ -218,23 +215,6 @@ input:-webkit-autofill:active {
     font-size: 28px;
 }
 
-/* ---------------- LINK BUTTONS ---------------- */
-
-.link-button {
-    background: none;
-    border: none;
-    color: #3e2a14;
-    font-size: 18px;
-    font-family: var(--global-font), serif;
-    cursor: pointer;
-    margin-top: 8px;
-    text-decoration: underline;
-}
-
-.link-button:hover {
-    color: #5a3e1b;
-}
-
 /* ---------------- RESET PAGE ---------------- */
 
 .reset-container {
@@ -261,7 +241,6 @@ input:-webkit-autofill:active {
     padding: 12px;
     margin: 12px 0;
     font-size: 18px;
-    font-family: var(--global-font), serif;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 12px;
@@ -280,7 +259,6 @@ input:-webkit-autofill:active {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: var(--global-font), serif;
     transition: background-color 0.3s ease;
 }
 
@@ -288,82 +266,11 @@ input:-webkit-autofill:active {
     background-color: #a9743a;
 }
 
-/* ---------------- OVERLAYS ---------------- */
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-/* ---------------- SUBMENU ---------------- */
-
-.submenu {
-    width: 100%;
-    max-width: 1400px;
-    min-width: 900px;
-    aspect-ratio: 16 / 9;
-    background: url('images/Menu_Background.png') no-repeat center center;
-    background-size: 100% 100%;
-    padding: 100px 80px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.submenu input {
-    width: 50%;
-    min-width: 260px;
-    max-width: 500px;
-    padding: 12px;
-    margin: 12px 0;
-    font-size: 18px;
-    font-family: var(--global-font), serif;
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 12px;
-    color: #2a1a0a;
-}
-
-.submenu button {
-    width: 40%;
-    min-width: 220px;
-    max-width: 380px;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 20px;
-    background-color: #8b5a2b;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: var(--global-font), serif;
-    transition: background-color 0.3s ease;
-}
-
-.submenu button:hover {
-    background-color: #a9743a;
-}
-
 /* ---------------- CHARACTER CREATION PAGE ---------------- */
 
 .character-creation-body {
-    margin: 0;
-    padding: 0;
-    font-family: var(--global-font), serif;
     background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
     background-size: cover;
-    color: #2b1d0f;
 }
 
 .taskbar {
@@ -373,20 +280,15 @@ input:-webkit-autofill:active {
     padding: 10px;
     background: #2a2118;
     border-bottom: 1px solid #4a3a28;
+    z-index: 9999;
+    position: relative;
 }
 
 .settings-button {
-    padding: 6px 12px;
-}
-
-.settings-button {
-    margin-left: auto;
-    margin-right: 40px;
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
     border-radius: 8px;
     padding: 10px 20px;
-    font-family: var(--global-font), serif;
     font-size: 20px;
     cursor: pointer;
     transition: 0.2s ease;
@@ -396,85 +298,90 @@ input:-webkit-autofill:active {
     background-color: #d6c49a;
 }
 
+/* ---------------- CLEAN SETTINGS SYSTEM (NEW) ---------------- */
+
 .settings-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
+    inset: 0;
+    background: rgba(0,0,0,0.6);
     display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+    z-index: 9000;
 }
 
 .settings-menu {
-    width: 1400px;
-    height: 850px;
-    background: url('images/Book_menu_background.png') no-repeat center center;
-    background-size: 100% 100%;
-    padding: 60px;
-    display: flex;
-    box-sizing: border-box;
-    border-radius: 12px;
-}
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9001;
 
-.settings-left {
-    width: 50%;
-    position: relative;
-}
-
-.settings-title {
-    position: absolute;
-    top: 40px;
-    left: 60%;
-    transform: translateX(-50%);
-    text-align: center;
-}
-
-.settings-title h2 {
-    font-size: 48px;
-    font-family: var(--global-font), serif;
-    color: #2b1d0f;
-    margin: 0;
-}
-
-.settings-right {
-    width: 50%;
-    display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    position: relative;
+}
+
+.settings-window {
+    width: 520px;
+    max-width: 90%;
+    padding: 32px 40px;
+    background: url('/assets/images/Selection.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    text-align: center;
+    color: #2b1d0f;
+    box-sizing: border-box;
+}
+
+.settings-window h2 {
+    margin: 0 0 20px 0;
+    font-size: 32px;
 }
 
 .settings-button-stack {
-    position: absolute;
-    left: 40%;
-    transform: translateX(-50%);
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    align-items: center;
+    gap: 12px;
 }
 
 .settings-option,
 .settings-exit {
-    width: 200px;
-    padding: 10px;
-    font-size: 20px;
-    background-color: #8b5a2b;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #2b1d0f;
     cursor: pointer;
-    font-family: var(--global-font), serif;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .settings-option:hover,
 .settings-exit:hover {
-    background-color: #a9743a;
+    background-color: #d6c49a;
+}
+
+/* FONT MENU */
+#fontMenu .settings-window {
+    width: 600px;
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+#fontList button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #2b1d0f;
+    transition: background 0.15s;
+}
+
+#fontList button:hover {
+    background-color: #d6c49a;
 }
 
 /* ---------------- CHARACTER CREATION MENU ---------------- */
@@ -489,13 +396,12 @@ input:-webkit-autofill:active {
 .create-character-menu {
     background: url('images/Selection.jpg') no-repeat center center;
     background-size: 100% 100%;
-    width: 900px; /* FIX: bigger */
-    padding: 60px; /* FIX: bigger */
+    width: 900px;
+    padding: 60px;
     border-radius: 16px;
     box-shadow: 0 0 30px rgba(0,0,0,0.6);
-    font-family: 'PfefferMediaeval', serif;
-    color: #0e0a05; /* FIX: readable */
-    font-size: 22px; /* FIX */
+    font-size: 22px;
+    color: #0e0a05;
 }
 
 .create-character-title {
@@ -542,189 +448,7 @@ input:-webkit-autofill:active {
     background-color: #a9743a;
 }
 
-/* ---------------- SIDE INFO PANELS ---------------- */
-
-.side-info-panel {
-    position: absolute;
-    right: 40px;
-    top: 120px;
-    width: 450px;
-    height: 600px;
-    background: url('images/Selection.jpg') no-repeat center center;
-    background-size: 100% 100%;
-    padding: 30px;
-    border-radius: 12px;
-    overflow-y: auto;
-    z-index: 5;
-    display: none;
-}
-
-/* ---------------- FEATS TOGGLE ---------------- */
-
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 28px;
-}
-
-.toggle-switch input {
-    display: none;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    background-color: #a67c52;
-    border-radius: 34px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transition: .3s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 3px;
-    bottom: 3px;
-    background-color: #f5deb3;
-    border-radius: 50%;
-    transition: .3s;
-}
-
-input:checked + .slider {
-    background-color: #d4b483;
-}
-
-input:checked + .slider:before {
-    transform: translateX(32px);
-}
-
-.feats-toggle-container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.feats-toggle-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #3b2b1a;
-    margin-bottom: 6px;
-    user-select: none;
-}
-
-.feats-toggle-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.feats-label-left,
-.feats-label-right {
-    font-size: 18px;
-    color: #3b2b1a;
-    font-weight: bold;
-    user-select: none;
-}
-
-/* ---------------- CHARACTER SHEET TABS ---------------- */
-
-/* FIX: High-contrast, parchment-themed tabs */
-.sheet-tab {
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #2b1d0f;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-
-.sheet-tab:hover {
-    background-color: #d6c49a;
-    transform: translateY(-2px);
-}
-
-.sheet-tab.active {
-    background-color: #8b5a2b;
-    color: #fffbe8;
-    border-color: #3e2a14;
-}
-
-
-/* FIX: Light parchment panels for readability */
-.tab-panel {
-    display: none;
-    padding: 30px;
-    background: rgba(255, 245, 225, 0.82); /* FIX */
-    border: 2px solid #5a3e1b;
-    border-radius: 10px;
-    box-shadow: inset 0 0 12px rgba(0,0,0,0.25);
-    color: #0e0a05 !important; /* FIX */
-}
-
-.tab-panel.active {
-    display: block;
-}
-
-/* FIX: Readable inputs inside tabs */
-.tab-grid input,
-.tab-grid select,
-.tab-grid textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: 2px solid #5a3e1b;
-    background: #c8b48a;
-    color: #2b1d0f;
-    font-size: 18px;
-    font-family: var(--global-font), serif;
-}
-
-.tab-grid input:focus,
-.tab-grid select:focus,
-.tab-grid textarea:focus {
-    outline: none;
-    background: #d6c49a;
-    border-color: #8b5a2b;
-    box-shadow: 0 0 6px rgba(90,62,27,0.6);
-}
-
-.ability-edit-box {
-    background: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    color: #2b1d0f;
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
-}
-
-.ability-edit-box input {
-    width: 60px;
-    text-align: center;
-    margin-top: 4px;
-    background: #c8b48a;
-    border: 2px solid #5a3e1b;
-    color: #2b1d0f;
-    border-radius: 6px;
-    padding: 4px;
-}
-
-.ability-edit-box input:focus {
-    background: #fff3d0;
-    border-color: #8b5a2b;
-}
-
+/* ---------------- CHARACTER SHEET ---------------- */
 
 .sheet-panel {
     width: 100%;
@@ -740,131 +464,51 @@ input:checked + .slider:before {
     font-size: 24px;
 }
 
-
-/* ---------------- FONT MENU ---------------- */
-
-.font-menu {
-    width: 1300px;
-    height: 900px;
-    background: url('images/Menu_background.png') no-repeat center center;
-    background-size: 100% 100%;
+.sheet-tabs {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    border-bottom: 1px solid #4a3a28;
+    padding-bottom: 4px;
 }
 
-.font-menu-inner {
-    width: 700px;
-    height: 520px;
-    padding: 50px;
-    margin-left: 10px;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.font-menu-title {
-    font-size: 42px;
-    margin-bottom: 30px;
-    font-family: var(--global-font), serif;
-}
-
-.font-list {
-    width: 80%;
-    height: 450px;
-    overflow-y: auto;
-    background: rgba(255,255,255,0.6);
-    border: 2px solid #5a3e1b;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-/* Each font is a real button that previews the font */
-.font-option {
-    display: block;
-    width: 100%;
-    padding: 10px 14px;
-    margin: 6px 0;
+.sheet-tab {
     background-color: #c8b48a;
     border: 2px solid #5a3e1b;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 22px;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 20px;
+    font-size: 18px;
     color: #2b1d0f;
-    text-align: left;
-    transition: background 0.15s, transform 0.1s;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.font-option:hover {
+.sheet-tab:hover {
     background-color: #d6c49a;
-    transform: scale(1.02);
+    transform: translateY(-2px);
 }
 
-.font-option.active {
+.sheet-tab.active {
     background-color: #8b5a2b;
-    color: white;
+    color: #fffbe8;
     border-color: #3e2a14;
 }
 
-.font-menu-buttons {
-    margin-top: 30px;
-    display: flex;
-    gap: 20px;
-}
-
-
-/* Visible editable textboxes for character sheet fields */
-.editable-field {
-    display: inline-block;
-    padding: 6px 10px;
-    min-width: 120px;
-    background: rgba(255, 255, 255, 0.55);
+.tab-panel {
+    display: none;
+    padding: 30px;
+    background: rgba(255, 245, 225, 0.82);
     border: 2px solid #5a3e1b;
-    border-radius: 6px;
-    cursor: text;
-    transition: background 0.15s, border-color 0.15s;
+    border-radius: 10px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.25);
+    color: #0e0a05 !important;
 }
 
-.editable-field:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.75);
-    border-color: #8b5a2b;
+.tab-panel.active {
+    display: block;
 }
 
-/* save button */
-.settings-button,
-.settings-option,
-.settings-exit {
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-family: var(--global-font), serif;
-    font-size: 20px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    color: #2b1d0f;
-}
-.settings-button:hover,
-.settings-option:hover,
-.settings-exit:hover {
-    background-color: #d6c49a;
-}
-
-/* ---------------- DELETE BUTTON ---------------- */
-.card-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* High-contrast readable text for all sheet content */
-.sheet-panel,
-.tab-panel,
-.tab-grid label,
 .tab-grid input,
 .tab-grid select,
 .tab-grid textarea {
@@ -875,189 +519,70 @@ input:checked + .slider:before {
     background: #c8b48a;
     color: #2b1d0f;
     font-size: 18px;
-    font-family: var(--global-font), serif;
-}
-.ability-edit-box,
-.ability-edit-box input {
-    color: #0e0a05 !important; /* deep charcoal */
 }
 
-/* Active tab text */
-.sheet-tab.active {
-    color: #fffbe8 !important;
+.tab-grid input:focus,
+.tab-grid select:focus,
+.tab-grid textarea:focus {
+    outline: none;
+    background: #d6c49a;
+    border-color: #8b5a2b;
+    box-shadow: 0 0 6px rgba(90,62,27,0.6);
 }
 
-/* Non-active tab text */
-.sheet-tab {
-    color: #1a1208 !important;
-}
-
-.character-sheet-body {
-    background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
-    background-size: cover;
-}
-
-.taskbar-buttons {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-left: auto;
-    margin-right: 20px;
-}
-
-.taskbar-buttons button {
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #2b1d0f;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-family: var(--global-font), serif;
-}
-
-.taskbar-buttons button:hover {
-    background-color: #d6c49a;
-}
-
-.taskbar-buttons button,
-.creator-actions button,
-.sheet-tabs button,
-.settings-option,
-.settings-exit {
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #2b1d0f;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-family: var(--global-font), serif;
-}
-
-.taskbar-buttons button:hover,
-.creator-actions button:hover,
-.sheet-tabs button:hover,
-.settings-option:hover,
-.settings-exit:hover {
-    background-color: #d6c49a;
-}
-
-.character-sheet-body {
-    background: url('images/Character_Creation_Background.jpg') no-repeat center center fixed;
-    background-size: cover;
-}
-
-.creator-grid input,
-.creator-grid select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: 2px solid #5a3e1b;
-    background: #c8b48a;
-    color: #2b1d0f;
-    font-size: 18px;
-    font-family: var(--global-font), serif;
-}
-
-.taskbar-buttons button,
-.creator-actions button,
-.sheet-tabs button,
-.settings-option,
-.settings-exit {
-    background-color: #c8b48a;
-    border: 2px solid #5a3e1b;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #2b1d0f;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-family: var(--global-font), serif;
-}
-
-.taskbar-buttons button:hover,
-.creator-actions button:hover,
-.sheet-tabs button:hover,
-.settings-option:hover,
-.settings-exit:hover {
-    background-color: #d6c49a;
-}
-
-.settings-overlay {
-    z-index: 9000;
-}
-
-.settings-menu {
-    z-index: 9001;
-}
-
-.taskbar {
-    z-index: 9999;
-    position: relative;
-}
-
-.settings-menu {
-    display: none;
-    flex-direction: row;
-}
-
-
-/* --- FINAL CHARACTER CARD STYLE (OVERRIDES EVERYTHING ABOVE) --- */
+/* ---------------- CHARACTER CARDS ---------------- */
 
 .character-card {
-    width: 360px;
-    min-height: 220px;
-    padding: 18px 20px;
-    border-radius: 12px;
-    position: relative;
+    width: 420px;        /* wider */
+    min-height: 260px;   /* same height unless you want more */
+    padding: 28px 32px;
 
-    /* Parchment-style background */
-    background: 
-        radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 60%),
-        radial-gradient(circle at bottom right, rgba(0,0,0,0.15), transparent 70%),
-        linear-gradient(135deg, #f7e7c1 0%, #f3d9a6 50%, #e9c98b 100%);
+    background-image: url("/assets/images/Character_Card_Background.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    border: 2px solid #8b5a2b;
-    box-shadow:
-        0 0 6px rgba(0,0,0,0.25),
-        inset 0 0 8px rgba(0,0,0,0.25);
+    border-radius: 18px;
 
-    font-family: 'PfefferMediaeval', serif;
-    color: #3b2a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    font-family: var(--global-font), serif;
+    color: #2b1d0f;
+
+    cursor: pointer;
+    transition: transform 0.15s ease-in-out, box-shadow 0.2s ease;
 }
+
 
 .character-card h2 {
     margin: 0 0 8px 0;
     font-size: 26px;
-    color: #3b2a1a;
 }
 
 .character-info {
     font-size: 16px;
     line-height: 1.4;
-    margin-bottom: 50px; /* space for buttons */
+    margin-bottom: 50px;
 }
 
-/* Button container bottom-right */
+/* Button cluster in bottom-right */
 .card-buttons {
     position: absolute;
     bottom: 12px;
     right: 12px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* Shared button style */
+
 .card-btn {
     padding: 6px 14px;
     border-radius: 8px;
     border: 2px solid #5a3b1e;
     background: linear-gradient(#d8b98a, #c9a675);
     color: #3b2a1a;
-    font-family: 'PfefferMediaeval', serif;
     cursor: pointer;
     transition: 0.2s ease;
 }
@@ -1077,10 +602,127 @@ input:checked + .slider:before {
     background: linear-gradient(#c97a6a, #b05a4a);
 }
 
-/* Character selection grid layout */
 .character-list {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, max-content);  /* columns shrink to card width */
+    justify-content: center;                        /* center the whole grid */
+    column-gap: 10px;                               /* tiny horizontal gap */
+    row-gap: 10px;                                  /* tiny vertical gap */
     width: 100%;
+    margin-top: 20px;
+}
+
+
+
+/* ============================
+   PASSWORD RESET (FINAL FIX)
+   ============================ */
+
+/* Darkened background overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;          /* hidden until JS shows it */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Centered popup window */
+.submenu {
+    width: 500px;
+    padding: 40px;
+    background: url('/assets/images/Selection.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    text-align: center;
+    color: #2b1d0f;
+}
+
+/* Inputs inside submenu */
+.submenu input {
+    width: 80%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 18px;
+    background-color: #c8b48a;
+    border: 2px solid #5a3e1b;
+    border-radius: 10px;
+    color: #2b1d0f;
+}
+
+/* Buttons inside submenu */
+.submenu button {
+    width: 40%;
+    padding: 10px;
+    margin: 10px;
+    font-size: 18px;
+    background-color: #8b5a2b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submenu button:hover {
+    background-color: #a9743a;
+}
+
+
+/* Feats button */
+/* Toggle Switch Container */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 28px;
+}
+
+/* Hide the checkbox */
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider background */
+.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #8b5a2b;
+    border: 2px solid #5a3e1b;
+    border-radius: 34px;
+    transition: 0.3s;
+}
+
+/* Slider knob */
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 3px;
+    background-color: #f5e6c8;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+/* When checked */
+.toggle-switch input:checked + .slider {
+    background-color: #c8b48a;
+}
+
+/* Move knob when checked */
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+.feats-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

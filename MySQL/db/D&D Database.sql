@@ -25,22 +25,24 @@ DROP TABLE IF EXISTS `abilityscores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `abilityscores` (
+  `AbilityScoreID` int NOT NULL AUTO_INCREMENT,
   `CharacterID` int NOT NULL,
-  `StrScore` int NOT NULL DEFAULT '10',
-  `StrMod` int NOT NULL DEFAULT '0',
-  `DexScore` int NOT NULL DEFAULT '10',
-  `DexMod` int NOT NULL DEFAULT '0',
-  `ConScore` int NOT NULL DEFAULT '10',
-  `ConMod` int NOT NULL DEFAULT '0',
-  `IntScore` int NOT NULL DEFAULT '10',
-  `IntMod` int NOT NULL DEFAULT '0',
-  `WisScore` int NOT NULL DEFAULT '10',
-  `WisMod` int NOT NULL DEFAULT '0',
-  `ChaScore` int NOT NULL DEFAULT '10',
-  `ChaMod` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`CharacterID`),
+  `StrScore` int NOT NULL,
+  `StrMod` int NOT NULL,
+  `DexScore` int NOT NULL,
+  `DexMod` int NOT NULL,
+  `ConScore` int NOT NULL,
+  `ConMod` int NOT NULL,
+  `IntScore` int NOT NULL,
+  `IntMod` int NOT NULL,
+  `WisScore` int NOT NULL,
+  `WisMod` int NOT NULL,
+  `ChaScore` int NOT NULL,
+  `ChaMod` int NOT NULL,
+  PRIMARY KEY (`AbilityScoreID`),
+  KEY `CharacterID` (`CharacterID`),
   CONSTRAINT `abilityscores_ibfk_1` FOREIGN KEY (`CharacterID`) REFERENCES `characters` (`CharacterID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,6 +51,7 @@ CREATE TABLE `abilityscores` (
 
 LOCK TABLES `abilityscores` WRITE;
 /*!40000 ALTER TABLE `abilityscores` DISABLE KEYS */;
+INSERT INTO `abilityscores` VALUES (19,20,20,5,10,0,10,0,10,0,10,0,10,0),(20,19,20,5,10,0,10,0,10,0,10,0,10,0),(29,29,10,0,10,0,10,0,10,0,10,0,10,0),(42,42,10,0,10,0,10,0,10,0,10,0,10,0),(43,43,10,0,10,0,10,0,10,0,10,0,10,0),(44,44,10,0,10,0,10,0,10,0,10,0,10,0);
 /*!40000 ALTER TABLE `abilityscores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +73,7 @@ CREATE TABLE `account` (
   PRIMARY KEY (`AccountID`),
   UNIQUE KEY `ux_account_username` (`Username`),
   UNIQUE KEY `ux_account_email` (`Email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,6 +82,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (3,'Test','dtate9@atu.edu','$2b$12$lYL6tDB7hGkyPwlV/Y0jEeCTRAc4QNLwP2ye.706kA/PmNLdNFkTi','Registered','2026-02-03 20:38:10','2026-02-03 20:38:10'),(4,'Test1','daltontate11@gmail.com','$2b$12$8iOerz3cmqT7eXikPV8deOdiOY556L4IEg37dDDLiBHMJ6CGaSGBm','Registered','2026-02-04 20:36:20','2026-02-10 12:24:50'),(5,'Test12345','Test1@gmail.com','$2b$12$d0VinwQX4n4HaoOYD9SK0evS5JX9grV//cG.YhVZO39LnmvvLH2ye','Registered','2026-02-05 12:10:46','2026-02-05 12:10:46');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +99,7 @@ CREATE TABLE `alignment` (
   `Description` text,
   PRIMARY KEY (`AlignmentID`),
   UNIQUE KEY `ux_alignment_name` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,6 +108,7 @@ CREATE TABLE `alignment` (
 
 LOCK TABLES `alignment` WRITE;
 /*!40000 ALTER TABLE `alignment` DISABLE KEYS */;
+INSERT INTO `alignment` VALUES (1,'Lawful Good','Acts with honor and compassion.'),(2,'Neutral Good','Does the best good possible.'),(3,'Chaotic Good','Acts with freedom and kindness.'),(4,'Lawful Neutral','Follows law, tradition, or code.'),(5,'True Neutral','Balanced between all forces.'),(6,'Chaotic Neutral','Follows personal freedom.'),(7,'Lawful Evil','Uses law for selfish gain.'),(8,'Neutral Evil','Does whatever benefits them.'),(9,'Chaotic Evil','Acts with selfish chaos.');
 /*!40000 ALTER TABLE `alignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,10 +173,12 @@ DROP TABLE IF EXISTS `character_equipment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `character_equipment` (
+  `CharacterEquipmentID` int NOT NULL AUTO_INCREMENT,
   `CharacterID` int NOT NULL,
   `EquipmentID` int NOT NULL,
   `Quantity` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`CharacterID`,`EquipmentID`),
+  PRIMARY KEY (`CharacterEquipmentID`),
+  KEY `CharacterID` (`CharacterID`),
   KEY `EquipmentID` (`EquipmentID`),
   CONSTRAINT `character_equipment_ibfk_1` FOREIGN KEY (`CharacterID`) REFERENCES `characters` (`CharacterID`) ON DELETE CASCADE,
   CONSTRAINT `character_equipment_ibfk_2` FOREIGN KEY (`EquipmentID`) REFERENCES `equipment` (`EquipmentID`) ON DELETE RESTRICT
@@ -195,9 +202,11 @@ DROP TABLE IF EXISTS `character_feat`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `character_feat` (
+  `CharacterFeatID` int NOT NULL AUTO_INCREMENT,
   `CharacterID` int NOT NULL,
   `FeatID` int NOT NULL,
-  PRIMARY KEY (`CharacterID`,`FeatID`),
+  PRIMARY KEY (`CharacterFeatID`),
+  KEY `CharacterID` (`CharacterID`),
   KEY `FeatID` (`FeatID`),
   CONSTRAINT `character_feat_ibfk_1` FOREIGN KEY (`CharacterID`) REFERENCES `characters` (`CharacterID`) ON DELETE CASCADE,
   CONSTRAINT `character_feat_ibfk_2` FOREIGN KEY (`FeatID`) REFERENCES `feat` (`FeatID`) ON DELETE RESTRICT
@@ -248,10 +257,11 @@ DROP TABLE IF EXISTS `character_proficiency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `character_proficiency` (
+  `CharacterProficiencyID` int NOT NULL AUTO_INCREMENT,
   `CharacterID` int NOT NULL,
   `ProficiencyID` int NOT NULL,
-  `Expertise` enum('Normal','Expert','Double') NOT NULL DEFAULT 'Normal',
-  PRIMARY KEY (`CharacterID`,`ProficiencyID`),
+  PRIMARY KEY (`CharacterProficiencyID`),
+  KEY `CharacterID` (`CharacterID`),
   KEY `ProficiencyID` (`ProficiencyID`),
   CONSTRAINT `character_proficiency_ibfk_1` FOREIGN KEY (`CharacterID`) REFERENCES `characters` (`CharacterID`) ON DELETE CASCADE,
   CONSTRAINT `character_proficiency_ibfk_2` FOREIGN KEY (`ProficiencyID`) REFERENCES `proficiency` (`ProficiencyID`) ON DELETE RESTRICT
@@ -275,9 +285,11 @@ DROP TABLE IF EXISTS `character_spell`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `character_spell` (
+  `CharacterSpellID` int NOT NULL AUTO_INCREMENT,
   `CharacterID` int NOT NULL,
   `SpellID` int NOT NULL,
-  PRIMARY KEY (`CharacterID`,`SpellID`),
+  PRIMARY KEY (`CharacterSpellID`),
+  KEY `CharacterID` (`CharacterID`),
   KEY `SpellID` (`SpellID`),
   CONSTRAINT `character_spell_ibfk_1` FOREIGN KEY (`CharacterID`) REFERENCES `characters` (`CharacterID`) ON DELETE CASCADE,
   CONSTRAINT `character_spell_ibfk_2` FOREIGN KEY (`SpellID`) REFERENCES `spell` (`SpellID`) ON DELETE RESTRICT
@@ -306,8 +318,6 @@ CREATE TABLE `characters` (
   `Name` varchar(100) NOT NULL,
   `Gender` varchar(50) DEFAULT 'Unspecified',
   `Level` int NOT NULL DEFAULT '1',
-  `Mode` enum('Beginner','Advanced') NOT NULL DEFAULT 'Beginner',
-  `Version` enum('5E','Homebrew') NOT NULL DEFAULT '5E',
   `RaceID` int NOT NULL,
   `ClassID` int NOT NULL,
   `SubclassID` int DEFAULT NULL,
@@ -325,13 +335,13 @@ CREATE TABLE `characters` (
   KEY `SubclassID` (`SubclassID`),
   KEY `BackgroundID` (`BackgroundID`),
   KEY `AlignmentID` (`AlignmentID`),
-  CONSTRAINT `characters_ibfk_1` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE,
-  CONSTRAINT `characters_ibfk_2` FOREIGN KEY (`RaceID`) REFERENCES `race` (`RaceID`) ON DELETE RESTRICT,
-  CONSTRAINT `characters_ibfk_3` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`) ON DELETE RESTRICT,
-  CONSTRAINT `characters_ibfk_4` FOREIGN KEY (`SubclassID`) REFERENCES `subclass` (`SubclassID`) ON DELETE SET NULL,
-  CONSTRAINT `characters_ibfk_5` FOREIGN KEY (`BackgroundID`) REFERENCES `background` (`BackgroundID`) ON DELETE SET NULL,
-  CONSTRAINT `characters_ibfk_6` FOREIGN KEY (`AlignmentID`) REFERENCES `alignment` (`AlignmentID`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_account` FOREIGN KEY (`AccountID`) REFERENCES `account` (`AccountID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_alignment` FOREIGN KEY (`AlignmentID`) REFERENCES `alignment` (`AlignmentID`) ON DELETE SET NULL,
+  CONSTRAINT `fk_background` FOREIGN KEY (`BackgroundID`) REFERENCES `background` (`BackgroundID`) ON DELETE SET NULL,
+  CONSTRAINT `fk_class` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_race` FOREIGN KEY (`RaceID`) REFERENCES `race` (`RaceID`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_subclass` FOREIGN KEY (`SubclassID`) REFERENCES `subclass` (`SubclassID`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -340,6 +350,7 @@ CREATE TABLE `characters` (
 
 LOCK TABLES `characters` WRITE;
 /*!40000 ALTER TABLE `characters` DISABLE KEYS */;
+INSERT INTO `characters` VALUES (19,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:38','2026-02-05 12:11:38'),(20,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:39','2026-02-05 12:11:39'),(29,3,'HEHE Test','HAHAHAH~!',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-08 17:37:35','2026-02-08 17:37:35'),(42,4,'Test character card 1','Test',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-11 16:15:12','2026-02-11 16:26:15'),(43,4,'Test character card 2','Test',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-11 16:26:31','2026-02-11 16:26:31'),(44,4,'Test Character card 3','Test',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-11 16:26:52','2026-02-11 16:26:52');
 /*!40000 ALTER TABLE `characters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,6 +366,8 @@ CREATE TABLE `class` (
   `Name` varchar(50) NOT NULL,
   `HitDiceType` varchar(10) DEFAULT NULL,
   `Spellcasting` tinyint(1) NOT NULL DEFAULT '0',
+  `SpellcastingAbility` varchar(10) DEFAULT NULL,
+  `SpellcastingType` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`ClassID`),
   UNIQUE KEY `ux_class_name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -366,7 +379,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,'Artificer',NULL,0);
+INSERT INTO `class` VALUES (1,'Artificer',NULL,0,NULL,NULL);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -416,6 +429,7 @@ CREATE TABLE `classfeature` (
   `SubclassID` int DEFAULT NULL,
   `Name` varchar(50) NOT NULL,
   `Description` text,
+  `EffectJson` json DEFAULT NULL,
   PRIMARY KEY (`FeatureID`),
   KEY `ClassID` (`ClassID`),
   KEY `SubclassID` (`SubclassID`),
@@ -479,6 +493,8 @@ CREATE TABLE `equipment` (
   `Properties` varchar(255) DEFAULT NULL,
   `Weight` decimal(6,2) DEFAULT NULL,
   `CostDesc` varchar(50) DEFAULT NULL,
+  `DamageDice` varchar(20) DEFAULT NULL,
+  `DamageType` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`EquipmentID`),
   UNIQUE KEY `ux_equipment_name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -505,6 +521,7 @@ CREATE TABLE `feat` (
   `Name` varchar(50) NOT NULL,
   `Description` text,
   `Prerequisite` varchar(100) DEFAULT NULL,
+  `EffectJson` json DEFAULT NULL,
   PRIMARY KEY (`FeatID`),
   UNIQUE KEY `ux_feat_name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -582,6 +599,7 @@ CREATE TABLE `raceability` (
   `RaceID` int NOT NULL,
   `AbilityName` varchar(50) NOT NULL,
   `ValueOrDesc` varchar(255) DEFAULT NULL,
+  `EffectJson` json DEFAULT NULL,
   PRIMARY KEY (`RaceAbilityID`),
   KEY `RaceID` (`RaceID`),
   CONSTRAINT `raceability_ibfk_1` FOREIGN KEY (`RaceID`) REFERENCES `race` (`RaceID`) ON DELETE CASCADE
@@ -629,6 +647,36 @@ LOCK TABLES `spell` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `spells`
+--
+
+DROP TABLE IF EXISTS `spells`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `spells` (
+  `SpellID` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) DEFAULT NULL,
+  `Level` int DEFAULT NULL,
+  `School` varchar(255) DEFAULT NULL,
+  `Range` varchar(255) DEFAULT NULL,
+  `Components` varchar(255) DEFAULT NULL,
+  `Duration` varchar(255) DEFAULT NULL,
+  `CastingTime` varchar(255) DEFAULT NULL,
+  `Description` text,
+  PRIMARY KEY (`SpellID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spells`
+--
+
+LOCK TABLES `spells` WRITE;
+/*!40000 ALTER TABLE `spells` DISABLE KEYS */;
+/*!40000 ALTER TABLE `spells` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `spellslot`
 --
 
@@ -669,7 +717,7 @@ CREATE TABLE `subclass` (
   PRIMARY KEY (`SubclassID`),
   UNIQUE KEY `ux_subclass_name_per_class` (`ClassID`,`Name`),
   CONSTRAINT `subclass_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -678,6 +726,7 @@ CREATE TABLE `subclass` (
 
 LOCK TABLES `subclass` WRITE;
 /*!40000 ALTER TABLE `subclass` DISABLE KEYS */;
+INSERT INTO `subclass` VALUES (1,1,'No Subclass','Default placeholder subclass');
 /*!40000 ALTER TABLE `subclass` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -727,4 +776,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-02 21:12:26
+-- Dump completed on 2026-02-11 16:45:24

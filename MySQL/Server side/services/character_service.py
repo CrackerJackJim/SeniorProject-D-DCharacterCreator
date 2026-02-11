@@ -7,6 +7,18 @@ def compute_prof_bonus(level: int) -> int:
     return 2 + (level - 1) // 4
 
 
+def safe_score(value):
+    """
+    Ensures ability scores are always valid integers.
+    Prevents None/NaN from reaching MySQL.
+    """
+    try:
+        v = int(value)
+        return v
+    except:
+        return 10  # default fallback
+
+
 async def create_character(
     account_id, name, gender,
     level,
@@ -28,30 +40,30 @@ async def create_character(
     alignment_id = clean_fk(alignment_id)
 
     # Normalize gender
-    valid_genders = ("Male", "Female", "Unspecified")
-    if gender not in valid_genders:
-        gender = "Unspecified"
+    gender = (gender or "").strip()
 
     # Compute proficiency bonus if not provided
     if proficiency_bonus is None:
         proficiency_bonus = compute_prof_bonus(level)
 
-    # Debug print
-    print("DEBUG INSERT VALUES:", {
-        "account_id": account_id,
-        "name": name,
-        "gender": gender,
-        "level": level,
-        "race_id": race_id,
-        "class_id": class_id,
-        "subclass_id": subclass_id,
-        "background_id": background_id,
-        "alignment_id": alignment_id,
-        "experience": experience,
-        "proficiency_bonus": proficiency_bonus
+    # Normalize ALL ability scores safely
+    str_score = safe_score(str_score)
+    dex_score = safe_score(dex_score)
+    con_score = safe_score(con_score)
+    int_score = safe_score(int_score)
+    wis_score = safe_score(wis_score)
+    cha_score = safe_score(cha_score)
+
+    print("ABILITY SCORES CLEANED:", {
+        "STR": str_score,
+        "DEX": dex_score,
+        "CON": con_score,
+        "INT": int_score,
+        "WIS": wis_score,
+        "CHA": cha_score
     })
 
-    # INSERT into characters — column order matches schema
+    # INSERT into characters
     char_id = await execute("""
         INSERT INTO characters (
             AccountID, Name, Gender,

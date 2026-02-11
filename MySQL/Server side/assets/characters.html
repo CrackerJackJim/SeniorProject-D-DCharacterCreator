@@ -53,15 +53,22 @@
         }
 
         .character-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, max-content);  /* columns shrink to card width */
+            justify-content: center;                        /* center the whole grid */
+            column-gap: 10px;                               /* tiny horizontal gap */
+            row-gap: 10px;                                  /* tiny vertical gap */
+            width: 100%;
+            margin-top: 20px;
         }
+
+
+
 
         /* --- NEW CHARACTER CARD STYLE --- */
 
         .character-card {
-            width: 100%;
+            width: 420px;
             min-height: 220px;
             background-image: url("/assets/images/Character_Card_Background.png");
             background-size: 100% 100%;

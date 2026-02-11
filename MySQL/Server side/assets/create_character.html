@@ -327,33 +327,53 @@
             display: none;
             position: fixed;
             inset: 0;
+            z-index: 9001;
+
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9001;
         }
 
-        .settings-left,
-        .settings-right {
-            background: url('/assets/images/Book_menu_background.png') no-repeat center center;
-            background-size: 100% 100%;
-            width: 600px;
-            height: 400px;
+        .settings-window {
+            width: 500px;
             padding: 40px;
-            box-sizing: border-box;
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            text-align: center;
         }
 
-        .settings-title h2 {
-            margin: 0 0 20px 0;
-            font-size: 32px;
+        .settings-window h2 {
+            margin-top: 0;
+            font-size: 36px;
             color: #2b1d0f;
         }
 
         .settings-button-stack {
+            margin-top: 30px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 40px;
+            gap: 16px;
         }
+
+        #fontList button {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 22px;
+            color: #2b1d0f;
+            transition: background 0.15s;
+        }
+
+        #fontList button:hover {
+            background-color: #d6c49a;
+        }
+
 
         .settings-option,
         .settings-exit {
@@ -380,20 +400,27 @@
 </head>
 <body class="character-sheet-body">
 
-    <div id="overlay" class="settings-overlay" style="display:none;"></div>
-    <div id="settingsMenu" class="settings-menu" style="display:none;">
-        <div class="settings-left">
-            <div class="settings-title">
-                <h2>Settings</h2>
-            </div>
-        </div>
+    <div id="overlay" class="settings-overlay"></div>
 
-        <div class="settings-right">
+    <div id="settingsMenu" class="settings-menu">
+        <div class="settings-window">
+            <h2>Settings</h2>
+
             <div class="settings-button-stack">
-                <button class="settings-option" id="changeFontBtn">Change Font</button>
+                <button class="settings-option" id="openFontMenuBtn">Change Font</button>
                 <button class="settings-option" id="logoutBtn2">Logout</button>
                 <button class="settings-exit" id="closeSettingsBtn">Close</button>
             </div>
+        </div>
+    </div>
+
+    <div id="fontMenu" class="settings-menu">
+        <div class="settings-window">
+            <h2>Select Font</h2>
+
+            <div id="fontList"></div>
+
+            <button class="settings-exit" id="closeFontMenuBtn" style="margin-top:20px;">Close</button>
         </div>
     </div>
 
@@ -443,7 +470,7 @@
                     </select>
                 </div>
 
-                <div>
+               <div>
                     <label>Feats</label>
                     <div class="feats-toggle-row">
                         <span>Disable</span>
@@ -978,117 +1005,148 @@
 
     </div>
 
-    <script type="module">
-    import { apiRequest } from "/assets/api.js";
+<script type="module">
 
-    let CURRENT_CHARACTER_ID = null;
-    let CURRENT_ACCOUNT_ID = null;
+// ---------------------------------------------------------
+// GUEST MODE CHECK (THIS MUST BE FIRST)
+// ---------------------------------------------------------
+const guestMode = localStorage.getItem("guest_mode") === "true";
 
-    let META_RACES = [];
-    let META_CLASSES = [];
-    let META_BACKGROUNDS = [];
+import { apiRequest } from "/assets/api.js";
 
-    function getCurrentUserId() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        return user?.id || null;
-    }
+let CURRENT_CHARACTER_ID = null;
+let CURRENT_ACCOUNT_ID = null;
 
-    async function loadMetadata() {
-        async function safeGet(url) {
-            try {
-                return await apiRequest(url, "GET");
-            } catch (err) {
-                console.error("Metadata load failed:", url, err);
-                return [];
-            }
+let overlay;
+let settingsMenu;
+let fontMenu;
+let fontList;
+
+let META_RACES = [];
+let META_CLASSES = [];
+let META_BACKGROUNDS = [];
+
+// ---------------- USER + METADATA ----------------
+
+function getCurrentUserId() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.id || null;
+}
+
+async function loadMetadata() {
+
+    async function safeGet(url) {
+        try {
+            return await apiRequest(url, "GET");
+        } catch (err) {
+            console.error("Metadata load failed:", url, err);
+            return [];
         }
-
-        META_RACES       = await safeGet("/meta/races");
-        META_CLASSES     = await safeGet("/meta/classes");
-        META_BACKGROUNDS = await safeGet("/meta/backgrounds");
-
-        const raceSelect = document.getElementById("charRaceSelect");
-        const classSelect = document.getElementById("charClassSelect");
-        const backgroundSelect = document.getElementById("charBackgroundSelect");
-
-        function populate(select, list) {
-            list.forEach(item => {
-                const opt = document.createElement("option");
-                opt.value = item.id;
-                opt.textContent = item.name;
-                select.appendChild(opt);
-            });
-        }
-
-        populate(raceSelect, META_RACES);
-        populate(classSelect, META_CLASSES);
-        populate(backgroundSelect, META_BACKGROUNDS);
     }
 
-    function abilityMod(score) {
-        return Math.floor((score - 10) / 2);
-    }
+    // Load static metadata for BOTH guests and logged-in users
+    META_RACES       = await safeGet("/meta/races");
+    META_CLASSES     = await safeGet("/meta/classes");
+    META_BACKGROUNDS = await safeGet("/meta/backgrounds");
 
-    function updateAbilityModDisplay(scoreInputId, modLabelId) {
-        const val = parseInt(document.getElementById(scoreInputId).value) || 10;
-        const mod = abilityMod(val);
-        const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
-        document.getElementById(modLabelId).textContent = `Mod: ${modStr}`;
-    }
+    const raceSelect = document.getElementById("charRaceSelect");
+    const classSelect = document.getElementById("charClassSelect");
+    const backgroundSelect = document.getElementById("charBackgroundSelect");
 
-    function wireAbilityModListeners() {
-        const pairs = [
-            ["abStr", "abStrMod"],
-            ["abDex", "abDexMod"],
-            ["abCon", "abConMod"],
-            ["abInt", "abIntMod"],
-            ["abWis", "abWisMod"],
-            ["abCha", "abChaMod"]
-        ];
-        pairs.forEach(([scoreId, modId]) => {
-            const input = document.getElementById(scoreId);
-            input.addEventListener("input", () => updateAbilityModDisplay(scoreId, modId));
-            updateAbilityModDisplay(scoreId, modId);
+    function populate(select, list) {
+        list.forEach(item => {
+            const opt = document.createElement("option");
+            opt.value = item.id;
+            opt.textContent = item.name;
+            select.appendChild(opt);
         });
     }
 
-    function renderSheet(data) {
-        const wrapper = document.getElementById("sheetWrapper");
-        const nameEl = document.getElementById("sheetName");
-        const subtitleEl = document.getElementById("sheetSubtitle");
-        const metaEl = document.getElementById("sheetMeta");
+    populate(raceSelect, META_RACES);
+    populate(classSelect, META_CLASSES);
+    populate(backgroundSelect, META_BACKGROUNDS);
+}
 
-        wrapper.classList.remove("hidden");
 
-        nameEl.textContent = data.Name;
-        subtitleEl.textContent = `Level ${data.Level} | Race ID: ${data.RaceID} | Class ID: ${data.ClassID}`;
-        metaEl.textContent = "";
+// ---------------- ABILITY SCORE HELPERS ----------------
 
-        // Overview tab
-        document.getElementById("ovName").value = data.Name || "";
-        document.getElementById("ovPlayerName").value = data.PlayerName || "";
-        document.getElementById("ovGender").value = data.Gender || "";
-        document.getElementById("ovRaceId").value = data.RaceID ?? "";
-        document.getElementById("ovClassId").value = data.ClassID ?? "";
-        document.getElementById("ovBackgroundId").value = data.BackgroundID ?? "";
-        document.getElementById("ovLevel").value = data.Level ?? 1;
-        document.getElementById("ovAlignment").value = data.Alignment || "";
-        document.getElementById("ovXP").value = data.ExperiencePoints ?? 0;
+function abilityMod(score) {
+    return Math.floor((score - 10) / 2);
+}
 
-        // Abilities tab
-        document.getElementById("abStr").value = data.Strength ?? 10;
-        document.getElementById("abDex").value = data.Dexterity ?? 10;
-        document.getElementById("abCon").value = data.Constitution ?? 10;
-        document.getElementById("abInt").value = data.Intelligence ?? 10;
-        document.getElementById("abWis").value = data.Wisdom ?? 10;
-        document.getElementById("abCha").value = data.Charisma ?? 10;
+function updateAbilityModDisplay(scoreInputId, modLabelId) {
+    const val = parseInt(document.getElementById(scoreInputId).value) || 10;
+    const mod = abilityMod(val);
+    const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+    document.getElementById(modLabelId).textContent = `Mod: ${modStr}`;
+}
 
-        wireAbilityModListeners();
-    }
+function wireAbilityModListeners() {
+    const pairs = [
+        ["abStr", "abStrMod"],
+        ["abDex", "abDexMod"],
+        ["abCon", "abConMod"],
+        ["abInt", "abIntMod"],
+        ["abWis", "abWisMod"],
+        ["abCha", "abChaMod"]
+    ];
+    pairs.forEach(([scoreId, modId]) => {
+        const input = document.getElementById(scoreId);
+        input.addEventListener("input", () => updateAbilityModDisplay(scoreId, modId));
+        updateAbilityModDisplay(scoreId, modId);
+    });
+}
 
-    document.getElementById("createCharacterBtn").addEventListener("click", async () => {
+// ---------------- RENDER CHARACTER SHEET ----------------
+
+function renderSheet(data) {
+    const wrapper = document.getElementById("sheetWrapper");
+    const nameEl = document.getElementById("sheetName");
+    const subtitleEl = document.getElementById("sheetSubtitle");
+    const metaEl = document.getElementById("sheetMeta");
+
+    wrapper.classList.remove("hidden");
+
+    nameEl.textContent = data.Name;
+    subtitleEl.textContent = `Level ${data.Level} | Race ID: ${data.RaceID} | Class ID: ${data.ClassID}`;
+    metaEl.textContent = "";
+
+    // Overview tab
+    document.getElementById("ovName").value = data.Name || "";
+    document.getElementById("ovPlayerName").value = data.PlayerName || "";
+    document.getElementById("ovGender").value = data.Gender || "";
+    document.getElementById("ovRaceId").value = data.RaceID ?? "";
+    document.getElementById("ovClassId").value = data.ClassID ?? "";
+    document.getElementById("ovBackgroundId").value = data.BackgroundID ?? "";
+    document.getElementById("ovLevel").value = data.Level ?? 1;
+    document.getElementById("ovAlignment").value = data.Alignment || "";
+    document.getElementById("ovXP").value = data.ExperiencePoints ?? 0;
+
+    // Abilities tab
+    document.getElementById("abStr").value = data.Strength ?? 10;
+    document.getElementById("abDex").value = data.Dexterity ?? 10;
+    document.getElementById("abCon").value = data.Constitution ?? 10;
+    document.getElementById("abInt").value = data.Intelligence ?? 10;
+    document.getElementById("abWis").value = data.Wisdom ?? 10;
+    document.getElementById("abCha").value = data.Charisma ?? 10;
+
+    wireAbilityModListeners();
+}
+
+// ---------------- SAFE SCORE ----------------
+
+function safeScore(id) {
+    const v = parseInt(document.getElementById(id).value);
+    return isNaN(v) ? 10 : v;
+}
+
+// ---------------- CREATE CHARACTER ----------------
+
+document.getElementById("createCharacterBtn").addEventListener("click", async () => {
+
+    //  GUEST MODE FIRST — NO BACKEND CALLS 
+    if (guestMode) {
         const payload = {
-            account_id: localStorage.getItem("account_id"),
             name: document.getElementById("charNameInput").value,
             gender: document.getElementById("charGenderInput").value,
             race_id: parseInt(document.getElementById("charRaceSelect").value),
@@ -1097,141 +1155,259 @@
                 ? parseInt(document.getElementById("charBackgroundSelect").value)
                 : null,
 
-            str: parseInt(document.getElementById("strInput").value),
-            dex: parseInt(document.getElementById("dexInput").value),
-            con: parseInt(document.getElementById("conInput").value),
-            int: parseInt(document.getElementById("intInput").value),
-            wis: parseInt(document.getElementById("wisInput").value),
-            cha: parseInt(document.getElementById("chaInput").value),
-
-            experience: 0,
-            proficiency_bonus: 2
+            str: safeScore("strInput"),
+            dex: safeScore("dexInput"),
+            con: safeScore("conInput"),
+            int: safeScore("intInput"),
+            wis: safeScore("wisInput"),
+            cha: safeScore("chaInput")
         };
 
-        try {
-            const result = await apiRequest("/characters/create", "POST", payload);
-
-            if (result.success) {
-                window.location.href = `/assets/create_character.html?character_id=${result.character_id}`;
-            }
-        } catch (err) {
-            console.error("Character creation failed:", err);
-            alert("Failed to create character.");
-        }
-    });
-
-
-    async function loadCharacter(charId) {
-        try {
-            const data = await apiRequest(`/characters/${charId}`, "GET");
-            CURRENT_CHARACTER_ID = data.CharacterID;
-            renderSheet(data);
-
-            // Hide creator panel when a character loads successfully
-            document.querySelector(".creator-panel").classList.add("hidden");
-            document.getElementById("sheetWrapper").classList.remove("hidden");
-
-        } catch (err) {
-            console.error(err);
-
-            // Character doesn't exist anymore
-            if (err?.detail === "Character not found" || err?.status === 404) {
-                localStorage.removeItem("lastCreatedCharacterId");
-                localStorage.removeItem("characterCreationComplete");
-                return;
-            }
-
-            alert("Failed to load character.");
-        }
-    }
-
-    async function startup() {
-        CURRENT_ACCOUNT_ID = getCurrentUserId();
-        if (!CURRENT_ACCOUNT_ID) {
-            window.location.href = "/assets/login.html";
-            return;
-        }
-
-        // Always load metadata first
-        await loadMetadata();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const loadId = urlParams.get("character_id");
-
-        if (loadId) {
-            try {
-                await loadCharacter(parseInt(loadId));
-            } catch (err) {
-                console.error("Failed to load character from URL:", err);
-                // If it fails, fall back to showing the creator panel
-                document.querySelector(".creator-panel").classList.remove("hidden");
-                document.getElementById("sheetWrapper").classList.add("hidden");
-            }
-        } else {
-            // No character specified → show creator panel
-            document.querySelector(".creator-panel").classList.remove("hidden");
-            document.getElementById("sheetWrapper").classList.add("hidden");
-        }
-
-        // Tab switching (unchanged)
-        const tabs = document.querySelectorAll(".sheet-tab");
-        const panels = {
-            overview: document.getElementById("tab-overview"),
-            abilities: document.getElementById("tab-abilities"),
-            skills: document.getElementById("tab-skills"),
-            combat: document.getElementById("tab-combat"),
-            inventory: document.getElementById("tab-inventory"),
-            spells: document.getElementById("tab-spells"),
-            feats: document.getElementById("tab-feats")
-        };
-
-        tabs.forEach(tab => {
-            tab.addEventListener("click", () => {
-                tabs.forEach(t => t.classList.remove("active"));
-                Object.values(panels).forEach(p => p.classList.remove("active"));
-
-                tab.classList.add("active");
-                const key = tab.dataset.tab;
-                panels[key].classList.add("active");
-            });
+        renderSheet({
+            Name: payload.name,
+            PlayerName: "Guest",
+            Gender: payload.gender,
+            RaceID: payload.race_id,
+            ClassID: payload.class_id,
+            BackgroundID: payload.background_id,
+            Level: 1,
+            Alignment: "",
+            ExperiencePoints: 0,
+            Strength: payload.str,
+            Dexterity: payload.dex,
+            Constitution: payload.con,
+            Intelligence: payload.int,
+            Wisdom: payload.wis,
+            Charisma: payload.cha
         });
+
+        document.querySelector(".creator-panel").classList.add("hidden");
+        document.getElementById("sheetWrapper").classList.remove("hidden");
+        return;
     }
 
-    document.getElementById("saveCharacterBtn").addEventListener("click", async () => {
-        if (!CURRENT_CHARACTER_ID) {
-            alert("No character loaded.");
-            return;
+    //  NORMAL USER CREATION 
+    const payload = {
+        account_id: localStorage.getItem("account_id"),
+        name: document.getElementById("charNameInput").value,
+        gender: document.getElementById("charGenderInput").value,
+        race_id: parseInt(document.getElementById("charRaceSelect").value),
+        class_id: parseInt(document.getElementById("charClassSelect").value),
+        background_id: document.getElementById("charBackgroundSelect").value
+            ? parseInt(document.getElementById("charBackgroundSelect").value)
+            : null,
+
+        str: safeScore("strInput"),
+        dex: safeScore("dexInput"),
+        con: safeScore("conInput"),
+        int: safeScore("intInput"),
+        wis: safeScore("wisInput"),
+        cha: safeScore("chaInput"),
+
+        experience: 0,
+        proficiency_bonus: 2
+    };
+
+    try {
+        const result = await apiRequest("/characters/create", "POST", payload);
+
+        if (result.success) {
+            window.location.href = `/assets/create_character.html?character_id=${result.character_id}`;
         }
-        try {
-            await apiRequest(`/characters/${CURRENT_CHARACTER_ID}/touch`, "POST");
-            alert("Character saved.");
-        } catch (err) {
-            console.error(err);
-            alert("Failed to save.");
-        }
+    } catch (err) {
+        console.error("Character creation failed:", err);
+        alert("Failed to create character.");
+    }
+});
+
+// ---------------- LOAD CHARACTER ----------------
+
+async function loadCharacter(charId) {
+    if (guestMode) return;
+
+    try {
+        const data = await apiRequest(`/characters/${charId}`, "GET");
+        CURRENT_CHARACTER_ID = data.CharacterID;
+        renderSheet(data);
+
+        document.querySelector(".creator-panel").classList.add("hidden");
+        document.getElementById("sheetWrapper").classList.remove("hidden");
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load character.");
+    }
+}
+
+// ---------------- TAB SWITCHING ----------------
+function wireTabs() {
+    const tabs = document.querySelectorAll(".sheet-tab");
+    const panels = document.querySelectorAll(".tab-panel");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const target = tab.dataset.tab;
+
+            // Remove active from all tabs
+            tabs.forEach(t => t.classList.remove("active"));
+
+            // Add active to clicked tab
+            tab.classList.add("active");
+
+            // Hide all panels
+            panels.forEach(p => p.classList.remove("active"));
+
+            // Show the selected panel
+            const panel = document.getElementById(`tab-${target}`);
+            if (panel) panel.classList.add("active");
+        });
+    });
+}
+
+// ---------------- STARTUP ----------------
+
+async function startup() {
+
+    const guestMode = localStorage.getItem("guest_mode") === "true";
+
+    // GUEST MODE FIRST — but DO NOT RETURN EARLY
+    if (guestMode) {
+        // Show creator panel, hide sheet
+        document.querySelector(".creator-panel").classList.remove("hidden");
+        document.getElementById("sheetWrapper").classList.add("hidden");
+
+        // Load dropdown data for guests
+        await loadMetadata();   // this loads races, classes, backgrounds
+
+        // Disable save button for guests
+        const saveBtn = document.getElementById("saveCharacterBtn");
+        saveBtn.disabled = true;
+        saveBtn.innerText = "Guest Mode (Cannot Save)";
+
+        return; // NOW it's safe to return
+    }
+
+    // NORMAL USER LOGIN CHECK
+    CURRENT_ACCOUNT_ID = getCurrentUserId();
+    if (!CURRENT_ACCOUNT_ID) {
+        window.location.href = "/assets/login.html";
+        return;
+    }
+
+    // LOAD METADATA (races, classes, backgrounds)
+    await loadMetadata();
+
+    // LOAD CHARACTER IF EDITING
+    const urlParams = new URLSearchParams(window.location.search);
+    const loadId = urlParams.get("character_id");
+
+    if (loadId) {
+        await loadCharacter(parseInt(loadId));
+    } else {
+        document.querySelector(".creator-panel").classList.remove("hidden");
+        document.getElementById("sheetWrapper").classList.add("hidden");
+    }
+}
+
+
+// ---------------- SAVE + NAVIGATION ----------------
+
+document.getElementById("saveCharacterBtn").addEventListener("click", async () => {
+    if (guestMode) {
+        alert("Guest characters cannot be saved.");
+        return;
+    }
+    if (!CURRENT_CHARACTER_ID) {
+        alert("No character loaded.");
+        return;
+    }
+    try {
+        await apiRequest(`/characters/${CURRENT_CHARACTER_ID}/touch`, "POST");
+        alert("Character saved.");
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save.");
+    }
+});
+
+document.getElementById("backToListBtn").addEventListener("click", () => {
+    window.location.href = "/assets/characters.html";
+});
+
+// ---------------- SETTINGS + FONT MENUS ----------------
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    // IMPORTANT: assign to the global variables, do NOT redeclare with const/let
+    overlay = document.getElementById("overlay");
+    settingsMenu = document.getElementById("settingsMenu");
+    fontMenu = document.getElementById("fontMenu");
+    fontList = document.getElementById("fontList");
+
+    // Force everything hidden on load
+    overlay.style.display = "none";
+    settingsMenu.style.display = "none";
+    fontMenu.style.display = "none";
+
+    // Open settings – only on real user click
+    document.getElementById("settingsButton").addEventListener("click", (e) => {
+        if (!e.isTrusted) return; // ignore programmatic clicks
+        overlay.style.display = "block";
+        settingsMenu.style.display = "flex";
     });
 
-    document.getElementById("backToListBtn").addEventListener("click", () => {
-        window.location.href = "/assets/characters.html";
-    });
-
-    document.getElementById("settingsButton").addEventListener("click", () => {
-        document.getElementById("settingsMenu").style.display = "flex";
-        document.getElementById("overlay").style.display = "flex";
-    });
-
+    // Close settings
     document.getElementById("closeSettingsBtn").addEventListener("click", () => {
-        document.getElementById("settingsMenu").style.display = "none";
-        document.getElementById("overlay").style.display = "none";
+        settingsMenu.style.display = "none";
+        overlay.style.display = "none";
     });
 
+    // Logout
     document.getElementById("logoutBtn2").addEventListener("click", () => {
         localStorage.clear();
         window.location.href = "/assets/login.html";
     });
 
+    // Open font menu – only on real user click
+    document.getElementById("openFontMenuBtn").addEventListener("click", (e) => {
+        if (!e.isTrusted) return; // ignore programmatic clicks
+        settingsMenu.style.display = "none";
+        fontMenu.style.display = "flex";
+        loadFontList();
+    });
+
+    // Close font menu
+    document.getElementById("closeFontMenuBtn").addEventListener("click", () => {
+        fontMenu.style.display = "none";
+        overlay.style.display = "none";
+    });
+});
+
+// Load fonts dynamically
+function loadFontList() {
+    const fonts = ["Firlest", "PfefferMediaeval", "Gondens", "ComicSans"];
+
+    fontList.innerHTML = "";
+
+    fonts.forEach(font => {
+        const btn = document.createElement("button");
+        btn.textContent = font;
+        btn.style.fontFamily = font;
+
+        btn.addEventListener("click", () => {
+            document.documentElement.style.setProperty("--global-font", font);
+        });
+
+        fontList.appendChild(btn);
+    });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    wireTabs();
     startup();
-    </script>
+});
+
+</script>
 
 </body>
 </html>

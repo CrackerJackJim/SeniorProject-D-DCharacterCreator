@@ -10,14 +10,14 @@
 <div class="auth-container">
     <h1>Login</h1>
 
+    <!-- Single correct login form -->
     <input id="identifier" type="text" placeholder="Username or Email" required>
     <input id="password" type="password" placeholder="Password" required>
 
-    <button id="loginBtn">Login</button>
+    <button id="loginBtn" type="button">Login</button>
+    <button id="forgotPasswordBtn" type="button" class="link-button">Forgot Password?</button>
+    <button id="guestButton" type="button" class="link-button">Continue as Guest</button>
 
-    <button id="forgotPasswordBtn" class="link-button">Forgot Password?</button>
-
-    <button id="guestBtn" class="link-button">Continue as Guest</button>
 
     <p id="error" class="error"></p>
 
@@ -32,8 +32,12 @@
 
     const loginBtn = document.getElementById("loginBtn");
     const errorEl = document.getElementById("error");
+    const guestBtn = document.getElementById("guestButton");
+    const forgotBtn = document.getElementById("forgotPasswordBtn");
 
-    loginBtn.addEventListener("click", async () => {
+    // ---------------- LOGIN ----------------
+    loginBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
         errorEl.textContent = "";
 
         const identifier = document.getElementById("identifier").value.trim();
@@ -50,36 +54,41 @@
                 password
             });
 
-            // Store user info
             localStorage.setItem("user", JSON.stringify({
                 id: result.user_id,
                 username: result.username,
                 email: result.email
             }));
 
-            // ⭐ CRITICAL FIX ⭐
-            // This is what your character creation backend requires.
             localStorage.setItem("account_id", result.user_id);
+            localStorage.removeItem("guest_mode");
 
             window.location.href = "/assets/characters.html";
-
         } catch (err) {
             errorEl.textContent = err.message || "Login failed.";
         }
     });
 
-    document.getElementById("forgotPasswordBtn").addEventListener("click", () => {
+    // ---------------- FORGOT PASSWORD ----------------
+    forgotBtn.addEventListener("click", (e) => {
+        e.preventDefault();
         window.location.href = "/assets/password_reset.html";
     });
 
-    document.getElementById("guestBtn").addEventListener("click", () => {
-        const tempGuestId = "guest_" + crypto.randomUUID();
+    // ---------------- GUEST MODE ----------------
+    guestBtn.addEventListener("click", (e) => {
+        e.preventDefault();
 
-        localStorage.setItem("user", JSON.stringify({ guest: true }));
-        localStorage.setItem("account_id", tempGuestId);
-        localStorage.setItem("is_guest", "true");
+        // Mark user as guest
+        localStorage.setItem("guest_mode", "true");
 
-        window.location.href = "/assets/characters.html";
+        // Remove any leftover account data
+        localStorage.removeItem("user");
+        localStorage.removeItem("account_id");
+
+        // Go directly to character creation
+        console.log("Guest button clicked → going to create_character.html");
+        window.location.href = "/assets/create_character.html";
     });
 </script>
 

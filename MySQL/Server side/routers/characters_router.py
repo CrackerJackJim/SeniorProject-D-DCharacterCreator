@@ -91,12 +91,21 @@ async def create_char(data: dict):
 @router.get("/account/{account_id}")
 async def get_characters_for_account(account_id: int):
     query = """
-        SELECT CharacterID, Name, RaceID, ClassID, Level
+        SELECT 
+            CharacterID,
+            Name,
+            RaceID,
+            ClassID,
+            BackgroundID,
+            Level,
+            CreatedAt,
+            UpdatedAt
         FROM characters
         WHERE AccountID = %s
     """
     rows = await fetch_all(query, (account_id,))
     return rows
+
 
 # ---------------------------------------------------------
 # GET SINGLE CHARACTER
@@ -236,3 +245,16 @@ async def delete_character(character_id: int):
         return {"success": True, "deleted_id": character_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Delete failed: {e}")
+    
+
+@router.post("/{character_id}/touch")
+async def touch_character(character_id: int):
+    try:
+        await execute(
+            "UPDATE characters SET UpdatedAt = NOW() WHERE CharacterID = %s",
+            (character_id,)
+        )
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Touch failed: {e}")
+

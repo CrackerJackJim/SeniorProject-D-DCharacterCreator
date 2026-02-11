@@ -56,7 +56,7 @@ submitPass.addEventListener("click", async () => {
         return;
     }
 
-    // ⭐ NEW: Match registration password rules
+    // NEW: Match registration password rules
     if (newPass.length < 8) {
         msg.textContent = "Password must be at least 8 characters.";
         return;

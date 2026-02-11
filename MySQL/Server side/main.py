@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
-# ⭐ DEBUG: Show which character_service file Python is actually importing
+# DEBUG: Show which character_service file Python is actually importing
 import services.character_service as cs
 print(">>> PYTHON IS IMPORTING character_service FROM:", cs.__file__)
 
@@ -31,7 +31,7 @@ app.mount(
     name="assets",
 )
 
-# ⭐ All routers mounted cleanly and consistently
+# All routers mounted cleanly and consistently
 app.include_router(auth_router, prefix="/api")
 app.include_router(characters_router)  # already has /api/characters prefix inside file
 app.include_router(fonts_router, prefix="/api")
