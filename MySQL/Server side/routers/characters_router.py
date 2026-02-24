@@ -1,10 +1,11 @@
-# routers/characters_router.py
 from fastapi import APIRouter, HTTPException
 from services.character_service import create_character
 from services.character_recalc import recalc_character
 from database.core import fetch_all, fetch_one, execute
 
 router = APIRouter(prefix="/api/characters", tags=["characters"])
+
+print(">>> RUNNING FILE:", __file__)
 
 # ---------------------------------------------------------
 # HELPERS
@@ -18,13 +19,12 @@ def safe_int(value):
     except:
         return None
 
+
 def normalize_fk(value):
-    """
-    Converts empty, null, or '0' values into None so MySQL accepts them.
-    """
     if value in (None, "", "0", 0, "null", "None"):
         return None
     return int(value)
+
 
 # ---------------------------------------------------------
 # CREATE CHARACTER
@@ -36,27 +36,22 @@ async def create_char(data: dict):
     if account_id is None:
         raise HTTPException(status_code=400, detail="Missing account_id")
 
-    # Basic fields
     name = data.get("name") or "Unnamed"
     gender = data.get("gender") or "Unspecified"
     level = safe_int(data.get("level")) or 1
 
-    # Required FK
     race_id = normalize_fk(data.get("race_id"))
     class_id = normalize_fk(data.get("class_id"))
 
     if race_id is None:
         raise HTTPException(status_code=400, detail="Missing or invalid race_id")
-
     if class_id is None:
         raise HTTPException(status_code=400, detail="Missing or invalid class_id")
 
-    # Optional FK
     background_id = normalize_fk(data.get("background_id"))
     alignment_id = normalize_fk(data.get("alignment_id"))
     subclass_id = normalize_fk(data.get("subclass_id"))
 
-    # Ability scores
     str_score = safe_int(data.get("str")) or 10
     dex_score = safe_int(data.get("dex")) or 10
     con_score = safe_int(data.get("con")) or 10
@@ -64,7 +59,6 @@ async def create_char(data: dict):
     wis_score = safe_int(data.get("wis")) or 10
     cha_score = safe_int(data.get("cha")) or 10
 
-    # Experience + proficiency bonus
     experience = safe_int(data.get("experience")) or 0
     proficiency_bonus = safe_int(data.get("proficiency_bonus"))
 
@@ -82,10 +76,51 @@ async def create_char(data: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Character creation failed: {e}")
 
+    # Ensure default combat row exists
+    await execute(
+        """
+        INSERT INTO combatstats (CharacterID, HP, MaxHP, HitDiceTotal, HitDiceRemaining, ArmorClass, Speed, Initiative, PassivePerception, Money)
+        VALUES (%s, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+        ON DUPLICATE KEY UPDATE CharacterID = CharacterID
+        """,
+        (char_id,)
+    )
+
+    # Ensure default saving throws row exists
+    await execute(
+        """
+        INSERT INTO charactersavingthrows (CharacterID)
+        VALUES (%s)
+        ON DUPLICATE KEY UPDATE CharacterID = CharacterID
+        """,
+        (char_id,)
+    )
+
+    # Ensure default skills row exists
+    await execute(
+        """
+        INSERT INTO characterskills (CharacterID)
+        VALUES (%s)
+        ON DUPLICATE KEY UPDATE CharacterID = CharacterID
+        """,
+        (char_id,)
+    )
+
+    # Ensure default inventory row exists
+    await execute(
+        """
+        INSERT INTO characterinventory (CharacterID)
+        VALUES (%s)
+        ON DUPLICATE KEY UPDATE CharacterID = CharacterID
+        """,
+        (char_id,)
+    )
+
     return {"success": True, "character_id": char_id}
 
+
 # ---------------------------------------------------------
-# GET ALL CHARACTERS FOR ACCOUNT (cards)
+# GET ALL CHARACTERS FOR ACCOUNT
 # ---------------------------------------------------------
 
 @router.get("/account/{account_id}")
@@ -113,37 +148,492 @@ async def get_characters_for_account(account_id: int):
 
 @router.get("/{char_id}")
 async def get_character(char_id: int):
-    query = """
-        SELECT *
-        FROM characters
-        WHERE CharacterID = %s
-    """
-    row = await fetch_one(query, (char_id,))
+    row = await fetch_one("SELECT * FROM characters WHERE CharacterID = %s", (char_id,))
     if not row:
         raise HTTPException(status_code=404, detail="Character not found")
     return row
 
+
 # ---------------------------------------------------------
-# SHEET (character + abilities + combat)
+# UPDATE CHARACTER (FULL SHEET SAVE)
+# ---------------------------------------------------------
+
+@router.post("/{char_id}/update")
+async def update_character(char_id: int, data: dict):
+
+    print(">>> RUNNING FILE:", __file__)
+    print("Updating character", char_id)
+    print("RAW DATA RECEIVED:", data)
+
+    overview = data.get("overview") or {}
+    abilities = data.get("abilities") or {}
+    combat = data.get("combat") or {}
+    saving_throws = data.get("saving_throws") or {}
+    skills = data.get("skills") or {}
+    inventory = data.get("inventory") or {}
+
+    # -----------------------------
+    # UPDATE characters table
+    # -----------------------------
+    await execute(
+        """
+        UPDATE characters SET
+            Name = %s,
+            PlayerName = %s,
+            Gender = %s,
+            Level = %s,
+            AlignmentID = %s,
+            Experience = %s
+        WHERE CharacterID = %s
+        """,
+        (
+            overview.get("name"),
+            overview.get("player_name"),
+            overview.get("gender"),
+            safe_int(overview.get("level")),
+            normalize_fk(overview.get("alignment")),
+            safe_int(overview.get("xp")),
+            char_id,
+        ),
+    )
+    
+    # -----------------------------
+    # UPDATE abilityscores
+    # -----------------------------
+    await execute(
+        """
+        UPDATE abilityscores SET
+            StrScore = %s,
+            DexScore = %s,
+            ConScore = %s,
+            IntScore = %s,
+            WisScore = %s,
+            ChaScore = %s
+        WHERE CharacterID = %s
+        """,
+        (
+            abilities.get("strength"),
+            abilities.get("dexterity"),
+            abilities.get("constitution"),
+            abilities.get("intelligence"),
+            abilities.get("wisdom"),
+            abilities.get("charisma"),
+            char_id,
+        ),
+    )
+
+    # -----------------------------
+    # UPSERT combatstats
+    # -----------------------------
+    await execute(
+        """
+        INSERT INTO combatstats (
+            CharacterID,
+            ArmorClass,
+            HP,
+            MaxHP,
+            Initiative,
+            Speed,
+            SpeedClimb,
+            SpeedSwim,
+            SpeedFly,
+            HitDiceTotal,
+            HitDiceRemaining,
+            PassivePerception,
+            PassiveInvestigation,
+            PassiveInsight,
+            DeathSuccess1,
+            DeathSuccess2,
+            DeathSuccess3,
+            DeathFail1,
+            DeathFail2,
+            DeathFail3,
+            Resistances,
+            Immunities,
+            Vulnerabilities,
+            Conditions,
+            ProficiencyBonus,
+            Money
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            ArmorClass = VALUES(ArmorClass),
+            HP = VALUES(HP),
+            MaxHP = VALUES(MaxHP),
+            Initiative = VALUES(Initiative),
+            Speed = VALUES(Speed),
+            SpeedClimb = VALUES(SpeedClimb),
+            SpeedSwim = VALUES(SpeedSwim),
+            SpeedFly = VALUES(SpeedFly),
+            HitDiceTotal = VALUES(HitDiceTotal),
+            HitDiceRemaining = VALUES(HitDiceRemaining),
+            PassivePerception = VALUES(PassivePerception),
+            PassiveInvestigation = VALUES(PassiveInvestigation),
+            PassiveInsight = VALUES(PassiveInsight),
+            DeathSuccess1 = VALUES(DeathSuccess1),
+            DeathSuccess2 = VALUES(DeathSuccess2),
+            DeathSuccess3 = VALUES(DeathSuccess3),
+            DeathFail1 = VALUES(DeathFail1),
+            DeathFail2 = VALUES(DeathFail2),
+            DeathFail3 = VALUES(DeathFail3),
+            Resistances = VALUES(Resistances),
+            Immunities = VALUES(Immunities),
+            Vulnerabilities = VALUES(Vulnerabilities),
+            Conditions = VALUES(Conditions),
+            ProficiencyBonus = VALUES(ProficiencyBonus),
+            Money = VALUES(Money)
+        """,
+        (
+            char_id,
+            safe_int(combat.get("ac")),
+            safe_int(combat.get("hp")) or 1,
+            safe_int(combat.get("max_hp")) or safe_int(combat.get("temp_hp")) or 1,
+            safe_int(combat.get("initiative")),
+            safe_int(combat.get("speed")),
+            combat.get("speed_climb"),
+            combat.get("speed_swim"),
+            combat.get("speed_fly"),
+            combat.get("hit_dice_total"),
+            combat.get("hit_dice_remaining"),
+            safe_int(combat.get("passive_perception")),
+            safe_int(combat.get("passive_investigation")),
+            safe_int(combat.get("passive_insight")),
+            int(bool(combat.get("death_success_1"))),
+            int(bool(combat.get("death_success_2"))),
+            int(bool(combat.get("death_success_3"))),
+            int(bool(combat.get("death_fail_1"))),
+            int(bool(combat.get("death_fail_2"))),
+            int(bool(combat.get("death_fail_3"))),
+            combat.get("resistances"),
+            combat.get("immunities"),
+            combat.get("vulnerabilities"),
+            combat.get("conditions"),
+            safe_int(combat.get("proficiency_bonus")) or 0,
+            str(combat.get("money") or "0"),
+        ),
+    )
+
+    # -----------------------------
+    # UPSERT saving throws
+    # -----------------------------
+    st = saving_throws or {}
+    await execute(
+        """
+        INSERT INTO charactersavingthrows (
+            CharacterID,
+            StrProf, StrValue,
+            DexProf, DexValue,
+            ConProf, ConValue,
+            IntProf, IntValue,
+            WisProf, WisValue,
+            ChaProf, ChaValue
+        )
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON DUPLICATE KEY UPDATE
+            StrProf = VALUES(StrProf),
+            StrValue = VALUES(StrValue),
+            DexProf = VALUES(DexProf),
+            DexValue = VALUES(DexValue),
+            ConProf = VALUES(ConProf),
+            ConValue = VALUES(ConValue),
+            IntProf = VALUES(IntProf),
+            IntValue = VALUES(IntValue),
+            WisProf = VALUES(WisProf),
+            WisValue = VALUES(WisValue),
+            ChaProf = VALUES(ChaProf),
+            ChaValue = VALUES(ChaValue)
+        """,
+        (
+            char_id,
+            int(bool(st.get("str", {}).get("proficient"))),
+            st.get("str", {}).get("value"),
+            int(bool(st.get("dex", {}).get("proficient"))),
+            st.get("dex", {}).get("value"),
+            int(bool(st.get("con", {}).get("proficient"))),
+            st.get("con", {}).get("value"),
+            int(bool(st.get("int", {}).get("proficient"))),
+            st.get("int", {}).get("value"),
+            int(bool(st.get("wis", {}).get("proficient"))),
+            st.get("wis", {}).get("value"),
+            int(bool(st.get("cha", {}).get("proficient"))),
+            st.get("cha", {}).get("value"),
+        ),
+    )
+
+    # -----------------------------
+    # UPDATE skills
+    # -----------------------------
+    sk = skills if isinstance(skills, dict) else {}
+
+    def s(name: str):
+        return sk.get(name)
+
+    await execute(
+        """
+        UPDATE characterskills SET
+            AcrobaticsValue        = %s,
+            AnimalHandlingValue    = %s,
+            ArcanaValue            = %s,
+            AthleticsValue         = %s,
+            DeceptionValue         = %s,
+            HistoryValue           = %s,
+            InsightValue           = %s,
+            IntimidationValue      = %s,
+            InvestigationValue     = %s,
+            MedicineValue          = %s,
+            NatureValue            = %s,
+            PerceptionValue        = %s,
+            PerformanceValue       = %s,
+            PersuasionValue        = %s,
+            ReligionValue          = %s,
+            SleightOfHandValue     = %s,
+            StealthValue           = %s,
+            SurvivalValue          = %s
+        WHERE CharacterID = %s
+        """,
+        (
+            s("acrobatics"),
+            s("animal_handling"),
+            s("arcana"),
+            s("athletics"),
+            s("deception"),
+            s("history"),
+            s("insight"),
+            s("intimidation"),
+            s("investigation"),
+            s("medicine"),
+            s("nature"),
+            s("perception"),
+            s("performance"),
+            s("persuasion"),
+            s("religion"),
+            s("sleight_of_hand"),
+            s("stealth"),
+            s("survival"),
+            char_id,
+        )
+    )
+
+    # -----------------------------
+    # UPSERT inventory
+    # -----------------------------
+    await execute(
+        """
+        INSERT INTO characterinventory (
+            CharacterID,
+            CP, SP, EP, GP, PP,
+            Armor, Weapons, Tools, MiscItems
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            CP = VALUES(CP),
+            SP = VALUES(SP),
+            EP = VALUES(EP),
+            GP = VALUES(GP),
+            PP = VALUES(PP),
+            Armor = VALUES(Armor),
+            Weapons = VALUES(Weapons),
+            Tools = VALUES(Tools),
+            MiscItems = VALUES(MiscItems)
+        """,
+        (
+            char_id,
+            inventory.get("cp"),
+            inventory.get("sp"),
+            inventory.get("ep"),
+            inventory.get("gp"),
+            inventory.get("pp"),
+            inventory.get("armor"),
+            inventory.get("weapons"),
+            inventory.get("tools"),
+            inventory.get("misc_items"),
+        )
+    )
+
+    # -----------------------------
+    # UPSERT spells
+    # -----------------------------
+    spells = data.get("spells") or {}
+
+    await execute(
+        """
+        INSERT INTO characterspells (
+            CharacterID,
+            SpellcastingAbility,
+            SpellSaveDC,
+            SpellAttackBonus,
+
+            L1SlotsTotal, L1SlotsRemaining,
+            L2SlotsTotal, L2SlotsRemaining,
+            L3SlotsTotal, L3SlotsRemaining,
+            L4SlotsTotal, L4SlotsRemaining,
+            L5SlotsTotal, L5SlotsRemaining,
+            L6SlotsTotal, L6SlotsRemaining,
+            L7SlotsTotal, L7SlotsRemaining,
+            L8SlotsTotal, L8SlotsRemaining,
+            L9SlotsTotal, L9SlotsRemaining,
+
+            KnownSpells,
+            PreparedSpells
+        )
+        VALUES (%s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s,
+        %s, %s)
+        ON DUPLICATE KEY UPDATE
+            SpellcastingAbility = VALUES(SpellcastingAbility),
+            SpellSaveDC = VALUES(SpellSaveDC),
+            SpellAttackBonus = VALUES(SpellAttackBonus),
+
+            L1SlotsTotal = VALUES(L1SlotsTotal),
+            L1SlotsRemaining = VALUES(L1SlotsRemaining),
+            L2SlotsTotal = VALUES(L2SlotsTotal),
+            L2SlotsRemaining = VALUES(L2SlotsRemaining),
+            L3SlotsTotal = VALUES(L3SlotsTotal),
+            L3SlotsRemaining = VALUES(L3SlotsRemaining),
+            L4SlotsTotal = VALUES(L4SlotsTotal),
+            L4SlotsRemaining = VALUES(L4SlotsRemaining),
+            L5SlotsTotal = VALUES(L5SlotsTotal),
+            L5SlotsRemaining = VALUES(L5SlotsRemaining),
+            L6SlotsTotal = VALUES(L6SlotsTotal),
+            L6SlotsRemaining = VALUES(L6SlotsRemaining),
+            L7SlotsTotal = VALUES(L7SlotsTotal),
+            L7SlotsRemaining = VALUES(L7SlotsRemaining),
+            L8SlotsTotal = VALUES(L8SlotsTotal),
+            L8SlotsRemaining = VALUES(L8SlotsRemaining),
+            L9SlotsTotal = VALUES(L9SlotsTotal),
+            L9SlotsRemaining = VALUES(L9SlotsRemaining),
+
+            KnownSpells = VALUES(KnownSpells),
+            PreparedSpells = VALUES(PreparedSpells)
+        """,
+        (
+            char_id,
+            spells.get("ability"),
+            spells.get("save_dc"),
+            spells.get("attack_bonus"),
+
+            spells.get("l1_total"), spells.get("l1_remaining"),
+            spells.get("l2_total"), spells.get("l2_remaining"),
+            spells.get("l3_total"), spells.get("l3_remaining"),
+            spells.get("l4_total"), spells.get("l4_remaining"),
+            spells.get("l5_total"), spells.get("l5_remaining"),
+            spells.get("l6_total"), spells.get("l6_remaining"),
+            spells.get("l7_total"), spells.get("l7_remaining"),
+            spells.get("l8_total"), spells.get("l8_remaining"),
+            spells.get("l9_total"), spells.get("l9_remaining"),
+
+            spells.get("known_spells"),
+            spells.get("prepared_spells"),
+        )
+    )
+
+    # -----------------------------
+    # UPSERT feats & traits
+    # -----------------------------
+    traits = data.get("traits") or {}
+
+    await execute(
+        """
+        INSERT INTO charactertraits (
+            CharacterID,
+            Feats,
+            RaceFeatures,
+            ClassFeatures,
+            BackgroundFeatures,
+            ProficienciesLanguages,
+            PersonalityTraits,
+            Ideals,
+            Bonds,
+            Flaws,
+            Backstory
+        )
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON DUPLICATE KEY UPDATE
+            Feats = VALUES(Feats),
+            RaceFeatures = VALUES(RaceFeatures),
+            ClassFeatures = VALUES(ClassFeatures),
+            BackgroundFeatures = VALUES(BackgroundFeatures),
+            ProficienciesLanguages = VALUES(ProficienciesLanguages),
+            PersonalityTraits = VALUES(PersonalityTraits),
+            Ideals = VALUES(Ideals),
+            Bonds = VALUES(Bonds),
+            Flaws = VALUES(Flaws),
+            Backstory = VALUES(Backstory)
+        """,
+        (
+            char_id,
+            traits.get("feats"),
+            traits.get("race_features"),
+            traits.get("class_features"),
+            traits.get("background_features"),
+            traits.get("proficiencies_languages"),
+            traits.get("personality_traits"),
+            traits.get("ideals"),
+            traits.get("bonds"),
+            traits.get("flaws"),
+            traits.get("backstory"),
+        )
+    )
+
+    return {"success": True, "character_id": char_id}
+
+
+# ---------------------------------------------------------
+# SHEET (character + abilities + combat + saves + skills + inventory)
 # ---------------------------------------------------------
 
 @router.get("/{character_id}/sheet")
 async def get_sheet(character_id: int):
-    char = await fetch_one("SELECT * FROM characters WHERE CharacterID = %s", (character_id,))
+
+    # Pull character + joined names for overview tab
+    char = await fetch_one(
+        """
+        SELECT 
+            c.*,
+            r.Name  AS RaceName,
+            cl.Name AS ClassName,
+            b.Name  AS BackgroundName
+        FROM characters c
+        LEFT JOIN race r ON c.RaceID = r.RaceID
+        LEFT JOIN class cl ON c.ClassID = cl.ClassID
+        LEFT JOIN background b ON c.BackgroundID = b.BackgroundID
+        WHERE c.CharacterID = %s
+        """,
+        (character_id,)
+    )
+
     if not char:
         raise HTTPException(status_code=404, detail="Character not found")
 
     abilities = await fetch_one("SELECT * FROM abilityscores WHERE CharacterID = %s", (character_id,))
     combat = await fetch_one("SELECT * FROM combatstats WHERE CharacterID = %s", (character_id,))
+    saving_throws = await fetch_one("SELECT * FROM charactersavingthrows WHERE CharacterID = %s", (character_id,))
+    skills = await fetch_one("SELECT * FROM characterskills WHERE CharacterID = %s", (character_id,))
+    inventory = await fetch_one("SELECT * FROM characterinventory WHERE CharacterID = %s", (character_id,))
+    spells = await fetch_one("SELECT * FROM characterspells WHERE CharacterID = %s", (character_id,))
+    traits = await fetch_one("SELECT * FROM charactertraits WHERE CharacterID = %s", (character_id,))
+
+    # Ensure skills row exists
+    if not skills:
+        await execute("INSERT INTO characterskills (CharacterID) VALUES (%s)", (character_id,))
+        skills = await fetch_one("SELECT * FROM characterskills WHERE CharacterID = %s", (character_id,))
 
     return {
         "character": char,
         "abilityscores": abilities,
-        "combatstats": combat
+        "combatstats": combat,
+        "savingthrows": saving_throws,
+        "skills": skills,
+        "inventory": inventory,
+        "spells": spells,
+        "traits": traits
     }
 
+
 # ---------------------------------------------------------
-# RECALC
+# RECALC / PROFICIENCIES / FEATS / SPELLS / EQUIPMENT / DELETE / TOUCH
 # ---------------------------------------------------------
 
 @router.post("/{character_id}/recalc")
@@ -154,9 +644,6 @@ async def recalc(character_id: int):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# ---------------------------------------------------------
-# PROFICIENCIES
-# ---------------------------------------------------------
 
 @router.post("/{character_id}/proficiencies")
 async def set_proficiencies(character_id: int, data: dict):
@@ -174,9 +661,6 @@ async def set_proficiencies(character_id: int, data: dict):
 
     return {"success": True, "character_id": character_id, "proficiencies": prof_ids}
 
-# ---------------------------------------------------------
-# FEATS
-# ---------------------------------------------------------
 
 @router.post("/{character_id}/feats")
 async def set_feats(character_id: int, data: dict):
@@ -194,9 +678,6 @@ async def set_feats(character_id: int, data: dict):
 
     return {"success": True, "character_id": character_id, "feats": feat_ids}
 
-# ---------------------------------------------------------
-# SPELLS
-# ---------------------------------------------------------
 
 @router.post("/{character_id}/spells")
 async def set_spells(character_id: int, data: dict):
@@ -214,9 +695,6 @@ async def set_spells(character_id: int, data: dict):
 
     return {"success": True, "character_id": character_id, "spells": spell_ids}
 
-# ---------------------------------------------------------
-# EQUIPMENT
-# ---------------------------------------------------------
 
 @router.post("/{character_id}/equipment")
 async def set_equipment(character_id: int, data: dict):
@@ -234,9 +712,6 @@ async def set_equipment(character_id: int, data: dict):
 
     return {"success": True, "character_id": character_id, "equipment": eq_ids}
 
-# ---------------------------------------------------------
-# DELETE CHARACTER
-# ---------------------------------------------------------
 
 @router.delete("/{character_id}/delete")
 async def delete_character(character_id: int):
@@ -245,7 +720,7 @@ async def delete_character(character_id: int):
         return {"success": True, "deleted_id": character_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Delete failed: {e}")
-    
+
 
 @router.post("/{character_id}/touch")
 async def touch_character(character_id: int):
@@ -257,4 +732,3 @@ async def touch_character(character_id: int):
         return {"success": True}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Touch failed: {e}")
-

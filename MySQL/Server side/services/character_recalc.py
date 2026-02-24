@@ -579,24 +579,6 @@ def recalc_character(character_id: int):
         "wis": ab["WisScore"],
         "cha": ab["ChaScore"]
     }
-
-    # -----------------------------
-    # APPLY RACIAL BONUSES
-    # -----------------------------
-    race_abilities = fetch_all(
-        "SELECT AbilityName, ValueOrDesc FROM raceability WHERE RaceID = %s",
-        (race_id,)
-    )
-
-    for ra in race_abilities:
-        name = ra["AbilityName"].lower()
-        val = ra["ValueOrDesc"]
-        if name in scores:
-            try:
-                scores[name] += int(val)
-            except Exception:
-                pass
-
     # -----------------------------
     # LOAD FEATS + EFFECTS (ABILITY SCORE BONUSES)
     # -----------------------------

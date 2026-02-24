@@ -427,7 +427,7 @@
     <div class="taskbar">
         <div class="taskbar-buttons">
             <button id="backToListBtn">Back to Characters</button>
-            <button id="saveCharacterBtn">Save</button>
+            <button id="saveCharacterBtn" type="button">Save</button>
             <button id="settingsButton">Settings</button>
         </div>
     </div>
@@ -543,42 +543,63 @@
                 <!-- OVERVIEW TAB -->
                 <div id="tab-overview" class="tab-panel active">
                     <div class="tab-grid">
+
                         <div>
                             <label for="ovName">Name</label>
                             <input type="text" id="ovName">
                         </div>
+
                         <div>
                             <label for="ovPlayerName">Player Name</label>
                             <input type="text" id="ovPlayerName">
                         </div>
+
                         <div>
                             <label for="ovGender">Gender</label>
                             <input type="text" id="ovGender">
                         </div>
+
                         <div>
-                            <label for="ovRaceId">Race ID</label>
-                            <input type="number" id="ovRaceId">
+                            <label for="ovRace">Race</label>
+                            <input type="text" id="ovRace" readonly>
                         </div>
+
                         <div>
-                            <label for="ovClassId">Class ID</label>
-                            <input type="number" id="ovClassId">
+                            <label for="ovClass">Class</label>
+                            <input type="text" id="ovClass" readonly>
                         </div>
+
                         <div>
-                            <label for="ovBackgroundId">Background ID</label>
-                            <input type="number" id="ovBackgroundId">
+                            <label for="ovBackground">Background</label>
+                            <input type="text" id="ovBackground" readonly>
                         </div>
+
                         <div>
                             <label for="ovLevel">Level</label>
                             <input type="number" id="ovLevel" min="1">
                         </div>
+
                         <div>
                             <label for="ovAlignment">Alignment</label>
-                            <input type="text" id="ovAlignment">
+                            <select id="ovAlignment">
+                                <option value="">-- Select Alignment --</option>
+                                <option value="1">Lawful Good</option>
+                                <option value="2">Neutral Good</option>
+                                <option value="3">Chaotic Good</option>
+                                <option value="4">Lawful Neutral</option>
+                                <option value="5">True Neutral</option>
+                                <option value="6">Chaotic Neutral</option>
+                                <option value="7">Lawful Evil</option>
+                                <option value="8">Neutral Evil</option>
+                                <option value="9">Chaotic Evil</option>
+                            </select>
                         </div>
+
                         <div>
                             <label for="ovXP">Experience Points</label>
                             <input type="number" id="ovXP" min="0">
                         </div>
+
                     </div>
                 </div>
 
@@ -655,96 +676,115 @@
                 <!-- SKILLS TAB -->
                 <div id="tab-skills" class="tab-panel">
                     <div class="skills-grid">
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillAcrobaticsProf">
-                            <label for="skillAcrobatics">Acrobatics (DEX)</label>
-                            <input type="number" id="skillAcrobatics">
+            
+                            <label for="skillAcrobaticsProf">Acrobatics (DEX)</label>
+                            <input type="number" id="skillAcrobatics" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillAnimalProf">
-                            <label for="skillAnimal">Animal Handling (WIS)</label>
-                            <input type="number" id="skillAnimal">
+                          
+                            <label for="skillAnimalProf">Animal Handling (WIS)</label>
+                            <input type="number" id="skillAnimal" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillArcanaProf">
-                            <label for="skillArcana">Arcana (INT)</label>
-                            <input type="number" id="skillArcana">
+                           
+                            <label for="skillArcanaProf">Arcana (INT)</label>
+                            <input type="number" id="skillArcana" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillAthleticsProf">
-                            <label for="skillAthletics">Athletics (STR)</label>
-                            <input type="number" id="skillAthletics">
+                           
+                            <label for="skillAthleticsProf">Athletics (STR)</label>
+                            <input type="number" id="skillAthletics" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillDeceptionProf">
-                            <label for="skillDeception">Deception (CHA)</label>
-                            <input type="number" id="skillDeception">
+          
+                            <label for="skillDeceptionProf">Deception (CHA)</label>
+                            <input type="number" id="skillDeception" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillHistoryProf">
-                            <label for="skillHistory">History (INT)</label>
-                            <input type="number" id="skillHistory">
+                     
+                            <label for="skillHistoryProf">History (INT)</label>
+                            <input type="number" id="skillHistory" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillInsightProf">
-                            <label for="skillInsight">Insight (WIS)</label>
-                            <input type="number" id="skillInsight">
+           
+                            <label for="skillInsightProf">Insight (WIS)</label>
+                            <input type="number" id="skillInsight" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillIntimidationProf">
-                            <label for="skillIntimidation">Intimidation (CHA)</label>
-                            <input type="number" id="skillIntimidation">
+       
+                            <label for="skillIntimidationProf">Intimidation (CHA)</label>
+                            <input type="number" id="skillIntimidation" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillInvestigationProf">
-                            <label for="skillInvestigation">Investigation (INT)</label>
-                            <input type="number" id="skillInvestigation">
+            
+                            <label for="skillInvestigationProf">Investigation (INT)</label>
+                            <input type="number" id="skillInvestigation" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillMedicineProf">
-                            <label for="skillMedicine">Medicine (WIS)</label>
-                            <input type="number" id="skillMedicine">
+              
+                            <label for="skillMedicineProf">Medicine (WIS)</label>
+                            <input type="number" id="skillMedicine" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillNatureProf">
-                            <label for="skillNature">Nature (INT)</label>
-                            <input type="number" id="skillNature">
+  
+                            <label for="skillNatureProf">Nature (INT)</label>
+                            <input type="number" id="skillNature" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillPerceptionProf">
-                            <label for="skillPerception">Perception (WIS)</label>
-                            <input type="number" id="skillPerception">
+             
+                            <label for="skillPerceptionProf">Perception (WIS)</label>
+                            <input type="number" id="skillPerception" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillPerformanceProf">
-                            <label for="skillPerformance">Performance (CHA)</label>
-                            <input type="number" id="skillPerformance">
+
+                            <label for="skillPerformanceProf">Performance (CHA)</label>
+                            <input type="number" id="skillPerformance" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillPersuasionProf">
-                            <label for="skillPersuasion">Persuasion (CHA)</label>
-                            <input type="number" id="skillPersuasion">
+       
+                            <label for="skillPersuasionProf">Persuasion (CHA)</label>
+                            <input type="number" id="skillPersuasion" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillReligionProf">
-                            <label for="skillReligion">Religion (INT)</label>
-                            <input type="number" id="skillReligion">
+                     
+                            <label for="skillReligionProf">Religion (INT)</label>
+                            <input type="number" id="skillReligion" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillSleightProf">
-                            <label for="skillSleight">Sleight of Hand (DEX)</label>
-                            <input type="number" id="skillSleight">
+             
+                            <label for="skillSleightProf">Sleight of Hand (DEX)</label>
+                            <input type="number" id="skillSleight" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillStealthProf">
-                            <label for="skillStealth">Stealth (DEX)</label>
-                            <input type="number" id="skillStealth">
+                
+                            <label for="skillStealthProf">Stealth (DEX)</label>
+                            <input type="number" id="skillStealth" value="0">
                         </div>
+
                         <div class="skill-row">
-                            <input type="checkbox" id="skillSurvivalProf">
-                            <label for="skillSurvival">Survival (WIS)</label>
-                            <input type="number" id="skillSurvival">
+             
+                            <label for="skillSurvivalProf">Survival (WIS)</label>
+                            <input type="number" id="skillSurvival" value="0">
                         </div>
+
                     </div>
                 </div>
 
@@ -787,6 +827,12 @@
                             <label for="combatHitDice">Hit Dice</label>
                             <input type="text" id="combatHitDice">
                         </div>
+
+                        <div>
+                            <label for="combatHitDiceRemaining">Hit Dice Remaining</label>
+                            <input type="text" id="combatHitDiceRemaining">
+                        </div>
+
                         <div>
                             <label for="combatProfBonus">Proficiency Bonus</label>
                             <input type="number" id="combatProfBonus">
@@ -808,15 +854,15 @@
                     <div class="death-saves">
                         <div class="death-saves-row">
                             <span>Death Saves - Successes:</span>
-                            <input type="checkbox" id="deathSaveSuccess1">
-                            <input type="checkbox" id="deathSaveSuccess2">
-                            <input type="checkbox" id="deathSaveSuccess3">
+                            <input type="checkbox" id="deathSuccess1">
+                            <input type="checkbox" id="deathSuccess2">
+                            <input type="checkbox" id="deathSuccess3">
                         </div>
                         <div class="death-saves-row">
                             <span>Death Saves - Failures:</span>
-                            <input type="checkbox" id="deathSaveFail1">
-                            <input type="checkbox" id="deathSaveFail2">
-                            <input type="checkbox" id="deathSaveFail3">
+                            <input type="checkbox" id="deathFail1">
+                            <input type="checkbox" id="deathFail2">
+                            <input type="checkbox" id="deathFail3">
                         </div>
                     </div>
 
@@ -887,120 +933,185 @@
 
                 <!-- SPELLS TAB -->
                 <div id="tab-spells" class="tab-panel">
+
                     <div class="tab-grid">
                         <div>
-                            <label for="spellcastingAbility">Spellcasting Ability</label>
-                            <input type="text" id="spellcastingAbility">
+                            <label for="spellAbility">SPELLCASTING ABILITY</label>
+                            <input type="text" id="spellAbility">
                         </div>
+
                         <div>
-                            <label for="spellSaveDC">Spell Save DC</label>
+                            <label for="spellSaveDC">SPELL SAVE DC</label>
                             <input type="number" id="spellSaveDC">
                         </div>
+
                         <div>
-                            <label for="spellAttackBonus">Spell Attack Bonus</label>
+                            <label for="spellAttackBonus">SPELL ATTACK BONUS</label>
                             <input type="number" id="spellAttackBonus">
                         </div>
                     </div>
 
-                    <h3 style="margin-top:20px; font-size:20px;">Spell Slots</h3>
+                    <div style="margin-top:20px;">
+                        <label style="font-size:20px;">SPELL SLOTS</label>
+                    </div>
+
                     <div class="tab-grid">
+
                         <div>
-                            <label for="slotsLevel1">Level 1 Slots</label>
-                            <input type="text" id="slotsLevel1" placeholder="Total / Remaining">
+                            <label for="spell1Total">LEVEL 1 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell1Total">
                         </div>
                         <div>
-                            <label for="slotsLevel2">Level 2 Slots</label>
-                            <input type="text" id="slotsLevel2" placeholder="Total / Remaining">
+                            <label for="spell1Remaining">LEVEL 1 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell1Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell2Total">LEVEL 2 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell2Total">
                         </div>
                         <div>
-                            <label for="slotsLevel3">Level 3 Slots</label>
-                            <input type="text" id="slotsLevel3" placeholder="Total / Remaining">
+                            <label for="spell2Remaining">LEVEL 2 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell2Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell3Total">LEVEL 3 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell3Total">
                         </div>
                         <div>
-                            <label for="slotsLevel4">Level 4 Slots</label>
-                            <input type="text" id="slotsLevel4" placeholder="Total / Remaining">
+                            <label for="spell3Remaining">LEVEL 3 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell3Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell4Total">LEVEL 4 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell4Total">
                         </div>
                         <div>
-                            <label for="slotsLevel5">Level 5 Slots</label>
-                            <input type="text" id="slotsLevel5" placeholder="Total / Remaining">
+                            <label for="spell4Remaining">LEVEL 4 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell4Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell5Total">LEVEL 5 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell5Total">
                         </div>
                         <div>
-                            <label for="slotsLevel6">Level 6 Slots</label>
-                            <input type="text" id="slotsLevel6" placeholder="Total / Remaining">
+                            <label for="spell5Remaining">LEVEL 5 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell5Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell6Total">LEVEL 6 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell6Total">
                         </div>
                         <div>
-                            <label for="slotsLevel7">Level 7 Slots</label>
-                            <input type="text" id="slotsLevel7" placeholder="Total / Remaining">
+                            <label for="spell6Remaining">LEVEL 6 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell6Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell7Total">LEVEL 7 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell7Total">
                         </div>
                         <div>
-                            <label for="slotsLevel8">Level 8 Slots</label>
-                            <input type="text" id="slotsLevel8" placeholder="Total / Remaining">
+                            <label for="spell7Remaining">LEVEL 7 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell7Remaining">
+                        </div>
+
+                        <div>
+                            <label for="spell8Total">LEVEL 8 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell8Total">
                         </div>
                         <div>
-                            <label for="slotsLevel9">Level 9 Slots</label>
-                            <input type="text" id="slotsLevel9" placeholder="Total / Remaining">
+                            <label for="spell8Remaining">LEVEL 8 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell8Remaining">
                         </div>
+
+                        <div>
+                            <label for="spell9Total">LEVEL 9 SLOTS (TOTAL)</label>
+                            <input type="number" id="spell9Total">
+                        </div>
+                        <div>
+                            <label for="spell9Remaining">LEVEL 9 SLOTS (REMAINING)</label>
+                            <input type="number" id="spell9Remaining">
+                        </div>
+
                     </div>
 
                     <div class="tab-grid" style="margin-top:20px;">
                         <div>
-                            <label for="spellsKnown">Known Spells</label>
-                            <textarea id="spellsKnown"></textarea>
+                            <label for="spellKnown">SPELLS KNOWN</label>
+                            <textarea id="spellKnown"></textarea>
                         </div>
+
                         <div>
-                            <label for="spellsPrepared">Prepared Spells</label>
-                            <textarea id="spellsPrepared"></textarea>
+                            <label for="spellPrepared">SPELLS PREPARED</label>
+                            <textarea id="spellPrepared"></textarea>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- FEATS & TRAITS TAB -->
                 <div id="tab-feats" class="tab-panel">
+
                     <div class="tab-grid">
+
                         <div>
-                            <label for="featsNotes">Feats</label>
+                            <label for="featsNotes">FEATS</label>
                             <textarea id="featsNotes" placeholder="List feats here."></textarea>
                         </div>
+
                         <div>
-                            <label for="raceFeatures">Race Features</label>
+                            <label for="raceFeatures">RACE FEATURES</label>
                             <textarea id="raceFeatures"></textarea>
                         </div>
+
                         <div>
-                            <label for="classFeatures">Class Features</label>
+                            <label for="classFeatures">CLASS FEATURES</label>
                             <textarea id="classFeatures"></textarea>
                         </div>
+
                         <div>
-                            <label for="backgroundFeatures">Background Features</label>
+                            <label for="backgroundFeatures">BACKGROUND FEATURES</label>
                             <textarea id="backgroundFeatures"></textarea>
                         </div>
+
                         <div>
-                            <label for="proficienciesLanguages">Proficiencies & Languages</label>
+                            <label for="proficienciesLanguages">PROFICIENCIES & LANGUAGES</label>
                             <textarea id="proficienciesLanguages"></textarea>
                         </div>
+
                         <div>
-                            <label for="personalityTraits">Personality Traits</label>
+                            <label for="personalityTraits">PERSONALITY TRAITS</label>
                             <textarea id="personalityTraits"></textarea>
                         </div>
+
                         <div>
-                            <label for="ideals">Ideals</label>
+                            <label for="ideals">IDEALS</label>
                             <textarea id="ideals"></textarea>
                         </div>
+
                         <div>
-                            <label for="bonds">Bonds</label>
+                            <label for="bonds">BONDS</label>
                             <textarea id="bonds"></textarea>
                         </div>
+
                         <div>
-                            <label for="flaws">Flaws</label>
+                            <label for="flaws">FLAWS</label>
                             <textarea id="flaws"></textarea>
                         </div>
+
                         <div>
-                            <label for="backstory">Backstory</label>
+                            <label for="backstory">BACKSTORY</label>
                             <textarea id="backstory"></textarea>
                         </div>
-                    </div>
-                </div>
 
-            </div>
+                    </div>
+
+                </div>
         </div>
 
     </div>
@@ -1012,9 +1123,17 @@
 // ---------------------------------------------------------
 const guestMode = localStorage.getItem("guest_mode") === "true";
 
+// Extract ?character_id=### from URL and expose globally
+const urlParams = new URLSearchParams(window.location.search);
+const charIdFromUrl = urlParams.get("character_id");
+if (charIdFromUrl) {
+    window.CURRENT_CHARACTER_ID = parseInt(charIdFromUrl);
+    console.log("Loaded character ID:", window.CURRENT_CHARACTER_ID);
+}
+
 import { apiRequest } from "/assets/api.js";
 
-let CURRENT_CHARACTER_ID = null;
+
 let CURRENT_ACCOUNT_ID = null;
 
 let overlay;
@@ -1034,7 +1153,6 @@ function getCurrentUserId() {
 }
 
 async function loadMetadata() {
-
     async function safeGet(url) {
         try {
             return await apiRequest(url, "GET");
@@ -1044,7 +1162,6 @@ async function loadMetadata() {
         }
     }
 
-    // Load static metadata for BOTH guests and logged-in users
     META_RACES       = await safeGet("/meta/races");
     META_CLASSES     = await safeGet("/meta/classes");
     META_BACKGROUNDS = await safeGet("/meta/backgrounds");
@@ -1066,7 +1183,6 @@ async function loadMetadata() {
     populate(classSelect, META_CLASSES);
     populate(backgroundSelect, META_BACKGROUNDS);
 }
-
 
 // ---------------- ABILITY SCORE HELPERS ----------------
 
@@ -1097,42 +1213,6 @@ function wireAbilityModListeners() {
     });
 }
 
-// ---------------- RENDER CHARACTER SHEET ----------------
-
-function renderSheet(data) {
-    const wrapper = document.getElementById("sheetWrapper");
-    const nameEl = document.getElementById("sheetName");
-    const subtitleEl = document.getElementById("sheetSubtitle");
-    const metaEl = document.getElementById("sheetMeta");
-
-    wrapper.classList.remove("hidden");
-
-    nameEl.textContent = data.Name;
-    subtitleEl.textContent = `Level ${data.Level} | Race ID: ${data.RaceID} | Class ID: ${data.ClassID}`;
-    metaEl.textContent = "";
-
-    // Overview tab
-    document.getElementById("ovName").value = data.Name || "";
-    document.getElementById("ovPlayerName").value = data.PlayerName || "";
-    document.getElementById("ovGender").value = data.Gender || "";
-    document.getElementById("ovRaceId").value = data.RaceID ?? "";
-    document.getElementById("ovClassId").value = data.ClassID ?? "";
-    document.getElementById("ovBackgroundId").value = data.BackgroundID ?? "";
-    document.getElementById("ovLevel").value = data.Level ?? 1;
-    document.getElementById("ovAlignment").value = data.Alignment || "";
-    document.getElementById("ovXP").value = data.ExperiencePoints ?? 0;
-
-    // Abilities tab
-    document.getElementById("abStr").value = data.Strength ?? 10;
-    document.getElementById("abDex").value = data.Dexterity ?? 10;
-    document.getElementById("abCon").value = data.Constitution ?? 10;
-    document.getElementById("abInt").value = data.Intelligence ?? 10;
-    document.getElementById("abWis").value = data.Wisdom ?? 10;
-    document.getElementById("abCha").value = data.Charisma ?? 10;
-
-    wireAbilityModListeners();
-}
-
 // ---------------- SAFE SCORE ----------------
 
 function safeScore(id) {
@@ -1144,7 +1224,6 @@ function safeScore(id) {
 
 document.getElementById("createCharacterBtn").addEventListener("click", async () => {
 
-    //  GUEST MODE FIRST — NO BACKEND CALLS 
     if (guestMode) {
         const payload = {
             name: document.getElementById("charNameInput").value,
@@ -1163,30 +1242,36 @@ document.getElementById("createCharacterBtn").addEventListener("click", async ()
             cha: safeScore("chaInput")
         };
 
-        renderSheet({
-            Name: payload.name,
-            PlayerName: "Guest",
-            Gender: payload.gender,
-            RaceID: payload.race_id,
-            ClassID: payload.class_id,
-            BackgroundID: payload.background_id,
-            Level: 1,
-            Alignment: "",
-            ExperiencePoints: 0,
-            Strength: payload.str,
-            Dexterity: payload.dex,
-            Constitution: payload.con,
-            Intelligence: payload.int,
-            Wisdom: payload.wis,
-            Charisma: payload.cha
-        });
-
+        const wrapper = document.getElementById("sheetWrapper");
+        wrapper.classList.remove("hidden");
         document.querySelector(".creator-panel").classList.add("hidden");
-        document.getElementById("sheetWrapper").classList.remove("hidden");
+
+        document.getElementById("sheetName").textContent = payload.name || "Guest Character";
+        document.getElementById("sheetSubtitle").textContent =
+            `Race ID: ${payload.race_id || "?"} | Class ID: ${payload.class_id || "?"}`;
+        document.getElementById("sheetMeta").textContent = "Guest Mode";
+
+        document.getElementById("ovName").value = payload.name || "";
+        document.getElementById("ovPlayerName").value = "Guest";
+        document.getElementById("ovGender").value = payload.gender || "";
+        document.getElementById("ovRaceId").value = payload.race_id || "";
+        document.getElementById("ovClassId").value = payload.class_id || "";
+        document.getElementById("ovBackgroundId").value = payload.background_id || "";
+        document.getElementById("ovLevel").value = 1;
+        document.getElementById("ovAlignment").value = "";
+        document.getElementById("ovXP").value = 0;
+
+        document.getElementById("abStr").value = payload.str;
+        document.getElementById("abDex").value = payload.dex;
+        document.getElementById("abCon").value = payload.con;
+        document.getElementById("abInt").value = payload.int;
+        document.getElementById("abWis").value = payload.wis;
+        document.getElementById("abCha").value = payload.cha;
+
+        wireAbilityModListeners();
         return;
     }
 
-    //  NORMAL USER CREATION 
     const payload = {
         account_id: localStorage.getItem("account_id"),
         name: document.getElementById("charNameInput").value,
@@ -1220,19 +1305,19 @@ document.getElementById("createCharacterBtn").addEventListener("click", async ()
     }
 });
 
-// ---------------- LOAD CHARACTER ----------------
+// ---------------- LOAD CHARACTER (REAL SHEET ENDPOINT) ----------------
 
 async function loadCharacter(charId) {
     if (guestMode) return;
+    if (!charId) return;
 
     try {
-        const data = await apiRequest(`/characters/${charId}`, "GET");
-        CURRENT_CHARACTER_ID = data.CharacterID;
-        renderSheet(data);
+        const data = await apiRequest(`/characters/${charId}/sheet`, "GET");
+
+        wireAbilityModListeners();
 
         document.querySelector(".creator-panel").classList.add("hidden");
         document.getElementById("sheetWrapper").classList.remove("hidden");
-
     } catch (err) {
         console.error(err);
         alert("Failed to load character.");
@@ -1248,16 +1333,10 @@ function wireTabs() {
         tab.addEventListener("click", () => {
             const target = tab.dataset.tab;
 
-            // Remove active from all tabs
             tabs.forEach(t => t.classList.remove("active"));
-
-            // Add active to clicked tab
             tab.classList.add("active");
 
-            // Hide all panels
             panels.forEach(p => p.classList.remove("active"));
-
-            // Show the selected panel
             const panel = document.getElementById(`tab-${target}`);
             if (panel) panel.classList.add("active");
         });
@@ -1267,68 +1346,34 @@ function wireTabs() {
 // ---------------- STARTUP ----------------
 
 async function startup() {
-
-    const guestMode = localStorage.getItem("guest_mode") === "true";
-
-    // GUEST MODE FIRST — but DO NOT RETURN EARLY
     if (guestMode) {
-        // Show creator panel, hide sheet
         document.querySelector(".creator-panel").classList.remove("hidden");
         document.getElementById("sheetWrapper").classList.add("hidden");
 
-        // Load dropdown data for guests
-        await loadMetadata();   // this loads races, classes, backgrounds
-
-        // Disable save button for guests
+        await loadMetadata();
         const saveBtn = document.getElementById("saveCharacterBtn");
         saveBtn.disabled = true;
         saveBtn.innerText = "Guest Mode (Cannot Save)";
-
-        return; // NOW it's safe to return
+        return;
     }
 
-    // NORMAL USER LOGIN CHECK
     CURRENT_ACCOUNT_ID = getCurrentUserId();
     if (!CURRENT_ACCOUNT_ID) {
         window.location.href = "/assets/login.html";
         return;
     }
 
-    // LOAD METADATA (races, classes, backgrounds)
     await loadMetadata();
 
-    // LOAD CHARACTER IF EDITING
-    const urlParams = new URLSearchParams(window.location.search);
-    const loadId = urlParams.get("character_id");
-
-    if (loadId) {
-        await loadCharacter(parseInt(loadId));
+    if (window.CURRENT_CHARACTER_ID) {
+        await loadCharacter(window.CURRENT_CHARACTER_ID);
     } else {
         document.querySelector(".creator-panel").classList.remove("hidden");
         document.getElementById("sheetWrapper").classList.add("hidden");
     }
 }
 
-
-// ---------------- SAVE + NAVIGATION ----------------
-
-document.getElementById("saveCharacterBtn").addEventListener("click", async () => {
-    if (guestMode) {
-        alert("Guest characters cannot be saved.");
-        return;
-    }
-    if (!CURRENT_CHARACTER_ID) {
-        alert("No character loaded.");
-        return;
-    }
-    try {
-        await apiRequest(`/characters/${CURRENT_CHARACTER_ID}/touch`, "POST");
-        alert("Character saved.");
-    } catch (err) {
-        console.error(err);
-        alert("Failed to save.");
-    }
-});
+// ---------------- NAVIGATION ----------------
 
 document.getElementById("backToListBtn").addEventListener("click", () => {
     window.location.href = "/assets/characters.html";
@@ -1338,49 +1383,45 @@ document.getElementById("backToListBtn").addEventListener("click", () => {
 
 window.addEventListener("DOMContentLoaded", () => {
 
-    // IMPORTANT: assign to the global variables, do NOT redeclare with const/let
     overlay = document.getElementById("overlay");
     settingsMenu = document.getElementById("settingsMenu");
     fontMenu = document.getElementById("fontMenu");
     fontList = document.getElementById("fontList");
 
-    // Force everything hidden on load
     overlay.style.display = "none";
     settingsMenu.style.display = "none";
     fontMenu.style.display = "none";
 
-    // Open settings – only on real user click
     document.getElementById("settingsButton").addEventListener("click", (e) => {
-        if (!e.isTrusted) return; // ignore programmatic clicks
+        if (!e.isTrusted) return;
         overlay.style.display = "block";
         settingsMenu.style.display = "flex";
     });
 
-    // Close settings
     document.getElementById("closeSettingsBtn").addEventListener("click", () => {
         settingsMenu.style.display = "none";
         overlay.style.display = "none";
     });
 
-    // Logout
     document.getElementById("logoutBtn2").addEventListener("click", () => {
         localStorage.clear();
         window.location.href = "/assets/login.html";
     });
 
-    // Open font menu – only on real user click
     document.getElementById("openFontMenuBtn").addEventListener("click", (e) => {
-        if (!e.isTrusted) return; // ignore programmatic clicks
+        if (!e.isTrusted) return;
         settingsMenu.style.display = "none";
         fontMenu.style.display = "flex";
         loadFontList();
     });
 
-    // Close font menu
     document.getElementById("closeFontMenuBtn").addEventListener("click", () => {
         fontMenu.style.display = "none";
         overlay.style.display = "none";
     });
+
+    wireTabs();
+    startup();
 });
 
 // Load fonts dynamically
@@ -1402,12 +1443,10 @@ function loadFontList() {
     });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    wireTabs();
-    startup();
-});
-
 </script>
 
+    <script type="module" src="/assets/character_load.js"></script>
+    <script type="module" src="/assets/character_save.js"></script>
+    
 </body>
 </html>

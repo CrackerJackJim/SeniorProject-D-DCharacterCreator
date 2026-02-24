@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException
 from models.auth_models import RegisterRequest, LoginRequest
 from services.auth import register_user, login_user
 from database.core import fetch_one, execute
-from passlib.hash import bcrypt
+from passlib.hash import argon2
 
 router = APIRouter(tags=["auth"])
 
 # -------------------------------------------------
-# REGISTER (ASYNC + FIXED)
+# REGISTER (ASYNC + ARGON2)
 # -------------------------------------------------
 @router.post("/register")
 async def register(req: RegisterRequest):
@@ -17,8 +17,9 @@ async def register(req: RegisterRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 # -------------------------------------------------
-# LOGIN
+# LOGIN (ARGON2 VERIFY IN services.auth.login_user)
 # -------------------------------------------------
 @router.post("/login")
 async def login(req: LoginRequest):
@@ -32,6 +33,7 @@ async def login(req: LoginRequest):
         "username": user["username"],
         "email": user["email"]
     }
+
 
 # -------------------------------------------------
 # PASSWORD RESET — VERIFY USER
@@ -51,8 +53,9 @@ async def verify_user(data: dict):
 
     return {"success": True, "user_id": user["AccountID"]}
 
+
 # -------------------------------------------------
-# PASSWORD RESET — UPDATE PASSWORD
+# PASSWORD RESET — UPDATE PASSWORD (ARGON2)
 # -------------------------------------------------
 @router.post("/password/reset/{user_id}")
 async def reset_password(user_id: int, data: dict):
@@ -64,7 +67,14 @@ async def reset_password(user_id: int, data: dict):
             detail="Password must be at least 8 characters long."
         )
 
-    hashed = bcrypt.hash(new_pass[:72])
+    # Optional: enforce same strong rules as register
+    # import re
+    # if not re.search(r"\d", new_pass):
+    #     raise HTTPException(status_code=400, detail="Password must contain at least one number.")
+    # if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", new_pass):
+    #     raise HTTPException(status_code=400, detail="Password must contain at least one symbol.")
+
+    hashed = argon2.hash(new_pass)
 
     await execute(
         "UPDATE account SET PasswordHash = %s WHERE AccountID = %s",
