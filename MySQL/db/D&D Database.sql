@@ -51,7 +51,7 @@ CREATE TABLE `abilityscores` (
 
 LOCK TABLES `abilityscores` WRITE;
 /*!40000 ALTER TABLE `abilityscores` DISABLE KEYS */;
-INSERT INTO `abilityscores` VALUES (19,20,20,5,10,0,10,0,10,0,10,0,10,0),(20,19,20,5,10,0,10,0,10,0,10,0,10,0),(29,29,10,0,10,0,10,0,10,0,10,0,10,0),(45,45,10,0,10,0,10,0,10,0,10,0,10,0),(48,48,3,0,3,0,3,0,3,0,3,0,3,0);
+INSERT INTO `abilityscores` VALUES (19,20,20,5,10,0,10,0,10,0,10,0,10,0),(20,19,20,5,10,0,10,0,10,0,10,0,10,0),(29,29,10,0,10,0,10,0,10,0,10,0,10,0),(48,48,3,0,3,0,3,0,3,0,3,0,3,0);
 /*!40000 ALTER TABLE `abilityscores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -73,7 +73,7 @@ CREATE TABLE `account` (
   PRIMARY KEY (`AccountID`),
   UNIQUE KEY `ux_account_username` (`Username`),
   UNIQUE KEY `ux_account_email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,7 +82,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (3,'Test','dtate9@atu.edu','$2b$12$lYL6tDB7hGkyPwlV/Y0jEeCTRAc4QNLwP2ye.706kA/PmNLdNFkTi','Registered','2026-02-03 20:38:10','2026-02-03 20:38:10'),(4,'Test1','daltontate11@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$DKE0JiQEYAzhfA9hzBnjXA$PxatmI995HxwcPToOrqLSPoFKpQzyQ9i3xkGdITYtyc','Registered','2026-02-04 20:36:20','2026-02-19 16:35:14'),(5,'Test12345','Test1@gmail.com','$2b$12$d0VinwQX4n4HaoOYD9SK0evS5JX9grV//cG.YhVZO39LnmvvLH2ye','Registered','2026-02-05 12:10:46','2026-02-05 12:10:46'),(6,'dalton','daltontate22@gmail.com','$2b$12$onNKWdAjsBkVCVrky0DRne3xcnUBZU409BhbSRE6SCebHyKsMIx.W','Registered','2026-02-12 13:06:24','2026-02-12 13:06:24'),(7,'EpicTest','EpicTest@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$gDAmRAiB8F7r3buXUsp5Tw$92FObZKc7TA57BTEJgQjfzV0NLSd9wL2igr8y7spi6s','Registered','2026-02-18 13:51:07','2026-02-18 13:51:07'),(9,'EpicTest2','EpicTest2@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$ZuxdKyXE2DsHQIgxplTKeQ$hKxGiHjhqzmJNlVdS7gJK9fsQP41VATFppzdLDA6tdg','Registered','2026-02-18 13:51:44','2026-02-18 13:51:44');
+INSERT INTO `account` VALUES (3,'Test','dtate9@atu.edu','$2b$12$lYL6tDB7hGkyPwlV/Y0jEeCTRAc4QNLwP2ye.706kA/PmNLdNFkTi','Registered','2026-02-03 20:38:10','2026-02-03 20:38:10'),(4,'Test1','daltontate11@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$FcJYK2WMsfae0/pfq1XKuQ$t+Zh/eiifH3TXVU6/UgB/5JNwRfYRpfNIO3JPQch2NQ','Registered','2026-02-04 20:36:20','2026-03-02 18:47:35'),(5,'Test12345','Test1@gmail.com','$2b$12$d0VinwQX4n4HaoOYD9SK0evS5JX9grV//cG.YhVZO39LnmvvLH2ye','Registered','2026-02-05 12:10:46','2026-02-05 12:10:46'),(6,'dalton','daltontate22@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$ce79H0MIgRAiZMz531srxQ$eOSjKsyUTj9TL5l8iVjb1Pba0zUmCUeg3YJM4w6xn+o','Registered','2026-02-12 13:06:24','2026-02-26 12:57:02'),(7,'EpicTest','EpicTest@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$gDAmRAiB8F7r3buXUsp5Tw$92FObZKc7TA57BTEJgQjfzV0NLSd9wL2igr8y7spi6s','Registered','2026-02-18 13:51:07','2026-02-18 13:51:07'),(9,'EpicTest2','EpicTest2@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$ZuxdKyXE2DsHQIgxplTKeQ$hKxGiHjhqzmJNlVdS7gJK9fsQP41VATFppzdLDA6tdg','Registered','2026-02-18 13:51:44','2026-02-18 13:51:44'),(10,'HelloTest','Hello@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$WSslBGAMoRSCMGZMCeHc2w$qcGIAs2S+Pywwj6GgETHjQTrnv5qEZHr31GK6qAcp0U','Registered','2026-02-26 13:13:52','2026-02-26 13:13:52');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -581,7 +581,7 @@ CREATE TABLE `characters` (
 
 LOCK TABLES `characters` WRITE;
 /*!40000 ALTER TABLE `characters` DISABLE KEYS */;
-INSERT INTO `characters` VALUES (19,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:38','2026-02-05 12:11:38',NULL),(20,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:39','2026-02-05 12:11:39',NULL),(29,3,'HEHE Test','HAHAHAH~!',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-08 17:37:35','2026-02-08 17:37:35',NULL),(45,6,'Dalton','Male',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-12 13:12:20','2026-02-12 13:12:20',NULL),(48,4,'Test character','GenderDragon2',3,1,1,NULL,1,1,3,2,NULL,'2026-02-24 11:09:55','2026-02-24 12:07:29','3');
+INSERT INTO `characters` VALUES (19,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:38','2026-02-05 12:11:38',NULL),(20,5,'Test character','Unspecified',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-05 12:11:39','2026-02-05 12:11:39',NULL),(29,3,'HEHE Test','HAHAHAH~!',1,1,1,NULL,1,NULL,0,2,NULL,'2026-02-08 17:37:35','2026-02-08 17:37:35',NULL),(48,4,'Test character','GenderDragon2',3,1,1,NULL,1,1,3,2,NULL,'2026-02-24 11:09:55','2026-02-24 12:07:29','3');
 /*!40000 ALTER TABLE `characters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1202,4 +1202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-24 12:08:56
+-- Dump completed on 2026-03-02 19:05:43
