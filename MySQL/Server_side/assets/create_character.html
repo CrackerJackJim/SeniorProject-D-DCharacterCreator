@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Character</title>
+    <link rel="stylesheet" href="/assets/style.css">
+
+    <style>
+        :root { --global-font: 'ComicSans'; }
+
+        body {
+            font-family: var(--global-font, 'ComicSans');
+            background-color: #1b1510;
+            color: #f5e6c8;
+            margin: 0;
+        }
+
+        .taskbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 10px;
+            background: #2a2118;
+            border-bottom: 1px solid #4a3a28;
+        }
+
+        .taskbar-buttons button {
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-family: var(--global-font), serif;
+        }
+
+        .taskbar-buttons button:hover {
+            background-color: #d6c49a;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 10px 40px;
+        }
+
+        .creator-panel {
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            color: #2b1d0f;
+        }
+
+        .creator-panel h2 {
+            margin-top: 0;
+        }
+
+        .creator-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 20px;
+        }
+
+        .creator-grid label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .creator-grid input,
+        .creator-grid select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid #5a3e1b;
+            background: #c8b48a;
+            color: #2b1d0f;
+            font-size: 18px;
+            font-family: var(--global-font), serif;
+        }
+
+        .ability-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px 12px;
+            margin-top: 10px;
+        }
+
+        .ability-row > div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .creator-actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .creator-actions button {
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-family: var(--global-font), serif;
+        }
+
+        .creator-actions button:hover {
+            background-color: #d6c49a;
+        }
+
+        .sheet-panel {
+            width: 100%;
+            max-width: 1800px;
+            margin: 40px auto;
+            padding: 80px;
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            min-height: 1100px;
+            color: #0e0a05 !important;
+            font-size: 24px;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .sheet-header h2 {
+            margin: 0;
+        }
+
+        .sheet-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .sheet-tabs {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            border-bottom: 1px solid #4a3a28;
+            padding-bottom: 4px;
+        }
+
+        .sheet-tab {
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-family: var(--global-font), serif;
+        }
+
+        .sheet-tab.active {
+            background-color: #8b5a2b;
+            color: #fffbe8;
+            border-color: #3e2a14;
+        }
+
+        .sheet-tab-content {
+            margin-top: 10px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .tab-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 20px;
+        }
+
+        .tab-grid label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .tab-grid input,
+        .tab-grid select,
+        .tab-grid textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid #5a3e1b;
+            background: #c8b48a;
+            color: #2b1d0f;
+            font-size: 18px;
+            font-family: var(--global-font), serif;
+        }
+
+        .tab-grid textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .abilities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px 12px;
+        }
+
+        .ability-edit-box {
+            background: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            color: #2b1d0f;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
+        }
+
+        .ability-edit-box .ability-name {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .ability-edit-box input {
+            width: 60px;
+            text-align: center;
+            margin-top: 4px;
+            background: #c8b48a;
+            border: 2px solid #5a3e1b;
+            color: #2b1d0f;
+            border-radius: 6px;
+            padding: 4px;
+        }
+
+        .ability-edit-box .ability-mod {
+            margin-top: 4px;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        /* ============================================================
+        FINAL SKILLS TAB FIX — OVERRIDES ALL OTHER LABEL RULES
+        ============================================================ */
+
+        #tab-skills .skills-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px 20px !important;
+        }
+
+        #tab-skills .skill-row {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            font-size: 16px !important;
+        }
+
+        #tab-skills .skill-row label {
+            width: 130px !important;
+            font-size: 16px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-block !important;
+        }
+
+        #tab-skills .skill-row input[type="number"] {
+            width: 55px !important;
+            text-align: center !important;
+            margin-right: 4px !important;
+            padding: 4px 6px !important;
+            border-radius: 6px !important;
+            border: 2px solid #5a3e1b !important;
+            background: #c8b48a !important;
+            color: #2b1d0f !important;
+            font-size: 16px !important;
+        }
+
+        #tab-skills .skill-row input[type="checkbox"] {
+            width: 16px !important;
+            height: 16px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #tab-skills .skill-flag-label {
+            font-size: 12px !important;
+            opacity: 0.85 !important;
+            margin: 0 2px !important;
+            padding: 0 !important;
+            display: inline-block !important;
+        }
+
+        /* ============================================================ */
+
+        .saving-throws-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 20px;
+            margin-top: 16px;
+        }
+
+        .saving-throw-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        .saving-throw-row input[type="number"] {
+            width: 70px;
+            text-align: center;
+            padding: 4px 6px;
+            border-radius: 6px;
+            border: 2px solid #5a3e1b;
+            background: #c8b48a;
+            color: #2b1d0f;
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .currency-grid label {
+            font-size: 14px;
+        }
+
+        .death-saves {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .death-saves-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .death-saves-row input[type="checkbox"] {
+            width: auto;
+        }
+
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9000;
+        }
+
+        .settings-menu {
+            display: none; /* KEEP THIS */
+            position: fixed;
+            inset: 0;
+            z-index: 9001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-window {
+            width: 500px;
+            padding: 40px;
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .settings-window h2 {
+            margin-top: 0;
+            font-size: 36px;
+            color: #2b1d0f;
+        }
+
+        .settings-button-stack {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #fontList button {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 22px;
+            color: #2b1d0f;
+            transition: background 0.15s;
+        }
+
+        #fontList button:hover {
+            background-color: #d6c49a;
+        }
+
+        .settings-option,
+        .settings-exit {
+            background-color: #c8b48a;
+            border: 2px solid #5a3e1b;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-family: var(--global-font), serif;
+        }
+
+        .settings-option:hover,
+        .settings-exit:hover {
+            background-color: #d6c49a;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+
+        /* Keep checkbox + text tight */
+        #tab-skills .skill-flag {
+            display: flex;
+            align-items: center;
+            gap: 4px; /* space between checkbox and text */
+        }
+
+        /* Checkbox */
+        #tab-skills .skill-flag input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Text label next to checkbox */
+        #tab-skills .skill-flag-label {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* Move ONLY the Prof group slightly right */
+        #tab-skills .skill-row .skill-flag:first-of-type {
+            margin-left: 6px; /* adjust this number to taste */
+        }
+
+        #tab-skills .skill-row .skill-flag {
+            gap: 2px; /* tighten checkbox + text */
+        }
+
+        #tab-skills .skill-row .skill-flag + .skill-flag {
+            margin-left: 0;
+        }
+
+        #overlay {
+            display: none !important;
+        }
+
+        /* SUBCLASS OVERLAY */
+        #subclassOverlay {
+            pointer-events: none !important;
+        }
+
+
+        /* SUBCLASS PANEL */
+        #subclassPanel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f4e7c6;
+            border: 3px solid #5a3e1b;
+            border-radius: 12px;
+            padding: 20px;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+            pointer-events: auto !important;
+            z-index: 999999 !important;
+        }
+
+        #subclassPanel h2 {
+            margin-top: 0;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        #subclassContent {
+            margin-top: 20px;
+        }
+
+        .subclass-option {
+            background: #c8b48a;
+            border: 2px solid #5a3e1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .subclass-option:hover {
+            background: #f2e4c8;
+        }
+
+        .subclass-selected {
+            background: #b08a5a !important;
+            border-color: #2b1d0f !important;
+            color: #2b1d0f !important;
+        }
+
+
+
+        #levelUpOverlay {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="character-sheet-body">
+
+    <div id="overlay" class="settings-overlay"></div>
+
+    <div id="settingsMenu" class="settings-menu">
+        <div class="settings-window">
+            <h2>Settings</h2>
+
+            <div class="settings-button-stack">
+                <button class="settings-option" id="openFontMenuBtn">Change Font</button>
+                <button class="settings-option" id="logoutBtn2">Logout</button>
+                <button class="settings-exit" id="closeSettingsBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="subclass-help-panel" id="subclassHelpPanel"></div>
+    
+
+    <div id="fontMenu" class="settings-menu">
+        <div class="settings-window">
+            <h2>Select Font</h2>
+
+            <div id="fontList"></div>
+
+            <button class="settings-exit" id="closeFontMenuBtn" style="margin-top:20px;">Close</button>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-buttons">
+            <button id="backToListBtn">Back to Characters</button>
+            <button id="saveCharacterBtn" type="button">Save</button>
+            <button id="settingsButton">Settings</button>
+        </div>
+    </div>
+
+    <div class="page-container">
+
+        <!-- CREATOR PANEL -->
+        <div class="creator-panel">
+            <h2>Create Character</h2>
+            <div class="creator-grid">
+
+                <div>
+                    <label for="charNameInput">Name</label>
+                    <input type="text" id="charNameInput" placeholder="Enter name...">
+                </div>
+
+                <div>
+                    <label for="charGenderInput">Gender</label>
+                    <input type="text" id="charGenderInput" placeholder="Enter gender...">
+                </div>
+
+                <div>
+                    <label for="charRaceSelect">Race</label>
+                    <select id="charRaceSelect">
+                        <option value="">Select Race</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="charClassSelect">Class</label>
+                    <select id="charClassSelect">
+                        <option value="">Select Class</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="charBackgroundSelect">Background</label>
+                    <select id="charBackgroundSelect">
+                        <option value="">Select Background</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Feats</label>
+                    <div class="feats-toggle-row">
+                        <span>Disable</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="enableFeatsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Enable</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <h3 style="margin-top:16px;">Ability Scores</h3>
+            <div class="ability-row">
+                <div>
+                    <label for="strInput">Strength</label>
+                    <input type="number" id="strInput" min="1" max="20" value="10">
+                </div>
+                <div>
+                    <label for="dexInput">Dexterity</label>
+                    <input type="number" id="dexInput" min="1" max="20" value="10">
+                </div>
+                <div>
+                    <label for="conInput">Constitution</label>
+                    <input type="number" id="conInput" min="1" max="20" value="10">
+                </div>
+                <div>
+                    <label for="intInput">Intelligence</label>
+                    <input type="number" id="intInput" min="1" max="20" value="10">
+                </div>
+                <div>
+                    <label for="wisInput">Wisdom</label>
+                    <input type="number" id="wisInput" min="1" max="20" value="10">
+                </div>
+                <div>
+                    <label for="chaInput">Charisma</label>
+                    <input type="number" id="chaInput" min="1" max="20" value="10">
+                </div>
+            </div>
+
+            <div class="creator-actions">
+                <button id="createCharacterBtn">Create Character</button>
+            </div>
+        </div>
+
+        <!-- LEVEL UP MODAL -->
+        <div id="levelUpOverlay" class="settings-overlay"></div>
+
+        <div id="levelUpMenu" class="settings-menu">
+            <div class="settings-window" style="width: 500px;">
+                <h2>Level Up</h2>
+
+                <div id="levelUpContent" style="margin-top: 20px; text-align: left;">
+                    <label for="manualHpInput" style="font-size: 20px;">Enter HP Roll</label>
+                    <select id="manualHpInput" style="width: 100%; margin-top: 8px;"></select>
+                </div>
+
+                <div class="settings-button-stack" style="margin-top: 30px;">
+                    <button class="settings-option" id="confirmLevelUpBtn">Confirm</button>
+                    <button class="settings-exit" id="cancelLevelUpBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHEET PANEL -->
+        <div id="sheetWrapper" class="sheet-panel hidden">
+            <div class="sheet-header">
+                <div>
+                    <h2 id="sheetName"></h2>
+                    <div class="sheet-subtitle" id="sheetSubtitle"></div>
+                </div>
+                <div class="sheet-subtitle" id="sheetMeta"></div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="sheet-tabs">
+                <button class="sheet-tab active" data-tab="overview">Overview</button>
+                <button class="sheet-tab" data-tab="abilities">Abilities</button>
+                <button class="sheet-tab" data-tab="skills">Skills</button>
+                <button class="sheet-tab" data-tab="combat">Combat</button>
+                <button class="sheet-tab" data-tab="inventory">Inventory</button>
+                <button class="sheet-tab" data-tab="spells">Spells</button>
+                <button class="sheet-tab" data-tab="feats">Feats & Traits</button>
+            </div>
+
+            <div class="sheet-tab-content">
+
+                <!-- OVERVIEW TAB -->
+                <div id="tab-overview" class="tab-panel active">
+                    <div class="tab-grid">
+
+                        <div>
+                            <label for="ovName">Name</label>
+                            <input type="text" id="ovName">
+                        </div>
+
+                        <div>
+                            <label for="ovPlayerName">Player Name</label>
+                            <input type="text" id="ovPlayerName">
+                        </div>
+
+                        <div>
+                            <label for="ovGender">Gender</label>
+                            <input type="text" id="ovGender">
+                        </div>
+
+                        <div>
+                            <label for="ovRace">Race</label>
+                            <input type="text" id="ovRace" readonly>
+                        </div>
+
+                        <div>
+                            <label for="ovClass">Class</label>
+                            <input type="text" id="ovClass" readonly>
+                        </div>
+
+                        <div>
+                            <label for="ovBackground">Background</label>
+                            <input type="text" id="ovBackground" readonly>
+                        </div>
+
+                        <!-- NEW SUBCLASS ROW -->
+                        <div>
+                            <label for="ovSubclass">Subclass</label>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <input type="text" id="ovSubclass" readonly placeholder="No subclass selected">
+                                <button id="chooseSubclassBtn"
+                                    style="
+                                        background-color:#c8b48a;
+                                        border:2px solid #5a3e1b;
+                                        border-radius:8px;
+                                        padding:6px 12px;
+                                        font-size:16px;
+                                        color:#2b1d0f;
+                                        cursor:pointer;
+                                        font-family:var(--global-font), serif;
+                                    ">
+                                    Choose Subclass
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="ovLevel">Level</label>
+
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <input type="number" id="ovLevel" min="1" readonly>
+
+                                <button id="levelUpBtn"
+                                    style="
+                                        background-color:#c8b48a;
+                                        border:2px solid #5a3e1b;
+                                        border-radius:8px;
+                                        padding:6px 12px;
+                                        font-size:16px;
+                                        color:#2b1d0f;
+                                        cursor:pointer;
+                                        font-family:var(--global-font), serif;
+                                    ">
+                                    Level Up
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="ovAlignment">Alignment</label>
+                            <select id="ovAlignment">
+                                <option value="">-- Select Alignment --</option>
+                                <option value="1">Lawful Good</option>
+                                <option value="2">Neutral Good</option>
+                                <option value="3">Chaotic Good</option>
+                                <option value="4">Lawful Neutral</option>
+                                <option value="5">True Neutral</option>
+                                <option value="6">Chaotic Neutral</option>
+                                <option value="7">Lawful Evil</option>
+                                <option value="8">Neutral Evil</option>
+                                <option value="9">Chaotic Evil</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="ovXP">Experience Points</label>
+                            <input type="number" id="ovXP" min="0">
+                        </div>
+
+                    </div>
+                </div>
+                <!-- ABILITIES TAB -->
+                <div id="tab-abilities" class="tab-panel">
+                    <div class="abilities-grid">
+                        <div class="ability-edit-box">
+                            <div class="ability-name">STR</div>
+                            <input type="number" id="abStr" min="1" max="20">
+                            <div class="ability-mod" id="abStrMod"></div>
+                        </div>
+                        <div class="ability-edit-box">
+                            <div class="ability-name">DEX</div>
+                            <input type="number" id="abDex" min="1" max="20">
+                            <div class="ability-mod" id="abDexMod"></div>
+                        </div>
+                        <div class="ability-edit-box">
+                            <div class="ability-name">CON</div>
+                            <input type="number" id="abCon" min="1" max="20">
+                            <div class="ability-mod" id="abConMod"></div>
+                        </div>
+                        <div class="ability-edit-box">
+                            <div class="ability-name">INT</div>
+                            <input type="number" id="abInt" min="1" max="20">
+                            <div class="ability-mod" id="abIntMod"></div>
+                        </div>
+                        <div class="ability-edit-box">
+                            <div class="ability-name">WIS</div>
+                            <input type="number" id="abWis" min="1" max="20">
+                            <div class="ability-mod" id="abWisMod"></div>
+                        </div>
+                        <div class="ability-edit-box">
+                            <div class="ability-name">CHA</div>
+                            <input type="number" id="abCha" min="1" max="20">
+                            <div class="ability-mod" id="abChaMod"></div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top:20px; font-size:20px;">Saving Throws</h3>
+                    <div class="saving-throws-grid">
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveStrProf">
+                            <label for="saveStr">Strength</label>
+                            <input type="number" id="saveStr">
+                        </div>
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveDexProf">
+                            <label for="saveDex">Dexterity</label>
+                            <input type="number" id="saveDex">
+                        </div>
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveConProf">
+                            <label for="saveCon">Constitution</label>
+                            <input type="number" id="saveCon">
+                        </div>
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveIntProf">
+                            <label for="saveInt">Intelligence</label>
+                            <input type="number" id="saveInt">
+                        </div>
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveWisProf">
+                            <label for="saveWis">Wisdom</label>
+                            <input type="number" id="saveWis">
+                        </div>
+                        <div class="saving-throw-row">
+                            <input type="checkbox" id="saveChaProf">
+                            <label for="saveCha">Charisma</label>
+                            <input type="number" id="saveCha">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SKILLS TAB -->
+                <div id="tab-skills" class="tab-panel">
+                    <div class="skills-grid">
+
+                        <div class="skill-row">
+                            <label class="skill-name">Acrobatics (DEX)</label>
+                            <input type="number" id="skillAcrobatics" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profAcrobatics">
+                                <label for="profAcrobatics" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expAcrobatics">
+                                <label for="expAcrobatics" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Animal Handling (WIS)</label>
+                            <input type="number" id="skillAnimal" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profAnimal">
+                                <label for="profAnimal" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expAnimal">
+                                <label for="expAnimal" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Arcana (INT)</label>
+                            <input type="number" id="skillArcana" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profArcana">
+                                <label for="profArcana" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expArcana">
+                                <label for="expArcana" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Athletics (STR)</label>
+                            <input type="number" id="skillAthletics" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profAthletics">
+                                <label for="profAthletics" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expAthletics">
+                                <label for="expAthletics" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Deception (CHA)</label>
+                            <input type="number" id="skillDeception" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profDeception">
+                                <label for="profDeception" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expDeception">
+                                <label for="expDeception" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">History (INT)</label>
+                            <input type="number" id="skillHistory" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profHistory">
+                                <label for="profHistory" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expHistory">
+                                <label for="expHistory" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Insight (WIS)</label>
+                            <input type="number" id="skillInsight" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profInsight">
+                                <label for="profInsight" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expInsight">
+                                <label for="expInsight" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Intimidation (CHA)</label>
+                            <input type="number" id="skillIntimidation" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profIntimidation">
+                                <label for="profIntimidation" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expIntimidation">
+                                <label for="expIntimidation" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Investigation (INT)</label>
+                            <input type="number" id="skillInvestigation" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profInvestigation">
+                                <label for="profInvestigation" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expInvestigation">
+                                <label for="expInvestigation" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Medicine (WIS)</label>
+                            <input type="number" id="skillMedicine" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profMedicine">
+                                <label for="profMedicine" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expMedicine">
+                                <label for="expMedicine" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Nature (INT)</label>
+                            <input type="number" id="skillNature" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profNature">
+                                <label for="profNature" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expNature">
+                                <label for="expNature" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Perception (WIS)</label>
+                            <input type="number" id="skillPerception" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profPerception">
+                                <label for="profPerception" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expPerception">
+                                <label for="expPerception" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Performance (CHA)</label>
+                            <input type="number" id="skillPerformance" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profPerformance">
+                                <label for="profPerformance" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expPerformance">
+                                <label for="expPerformance" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Persuasion (CHA)</label>
+                            <input type="number" id="skillPersuasion" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profPersuasion">
+                                <label for="profPersuasion" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expPersuasion">
+                                <label for="expPersuasion" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Religion (INT)</label>
+                            <input type="number" id="skillReligion" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profReligion">
+                                <label for="profReligion" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expReligion">
+                                <label for="expReligion" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Sleight of Hand (DEX)</label>
+                            <input type="number" id="skillSleight" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profSleight">
+                                <label for="profSleight" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expSleight">
+                                <label for="expSleight" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Stealth (DEX)</label>
+                            <input type="number" id="skillStealth" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profStealth">
+                                <label for="profStealth" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expStealth">
+                                <label for="expStealth" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-row">
+                            <label class="skill-name">Survival (WIS)</label>
+                            <input type="number" id="skillSurvival" value="0">
+                            <div class="skill-flag">
+                                <input type="checkbox" id="profSurvival">
+                                <label for="profSurvival" class="skill-flag-label">Prof</label>
+                            </div>
+                            <div class="skill-flag">
+                                <input type="checkbox" id="expSurvival">
+                                <label for="expSurvival" class="skill-flag-label">Expert</label>
+                            </div>
+                        </div>
+
+                    </div> <!-- END .skills-grid -->
+                </div> <!-- END #tab-skills -->
+
+                <!-- COMBAT TAB -->
+                <div id="tab-combat" class="tab-panel">
+                    <div class="tab-grid">
+
+                        <div>
+                            <label for="combatAC">Armor Class</label>
+                            <input type="number" id="combatAC">
+                        </div>
+
+                        <div class="combat-row">
+                            <label for="combatPassivePerception">Passive Perception</label>
+                            <input type="number" id="combatPassivePerception" value="0">
+                        </div>
+
+                        <div class="combat-row">
+                            <label for="combatPassiveInvestigation">Passive Investigation</label>
+                            <input type="number" id="combatPassiveInvestigation" value="0">
+                        </div>
+
+                        <div class="combat-row">
+                            <label for="combatPassiveInsight">Passive Insight</label>
+                            <input type="number" id="combatPassiveInsight" value="0">
+                        </div>
+
+                        <div class="combat-field">
+                            <label for="combatMaxHP">Max HP</label>
+                            <input type="number" id="combatMaxHP" readonly>
+                        </div>
+
+                        <div>
+                            <label for="combatCritRange">Critical Hit Range</label>
+                            <input type="text" id="combatCritRange" readonly>
+                        </div>
+
+                        <div>
+                            <label for="combatInit">Initiative</label>
+                            <input type="number" id="combatInit">
+                        </div>
+
+                        <div>
+                            <label for="combatHP">Current HP</label>
+                            <input type="number" id="combatHP">
+                        </div>
+
+                        <div>
+                            <label for="combatTempHP">Temporary HP</label>
+                            <input type="number" id="combatTempHP">
+                        </div>
+
+                        <div>
+                            <label for="combatSpeed">Speed</label>
+                            <input type="number" id="combatSpeed">
+                        </div>
+
+                        <div>
+                            <label for="combatHitDice">Hit Dice (Total)</label>
+                            <input type="number" id="combatHitDice">
+                        </div>
+
+                        <div>
+                            <label for="combatHitDiceRemaining">Hit Dice (Remaining)</label>
+                            <input type="number" id="combatHitDiceRemaining">
+                        </div>
+
+                        <div>
+                            <label for="combatProfBonus">Proficiency Bonus</label>
+                            <input type="number" id="combatProfBonus">
+                        </div>
+
+                        <!-- Death Saves -->
+                        <div style="grid-column: span 2;">
+                            <label>Death Saves</label>
+                            <div class="death-saves">
+                                <div class="death-saves-row">
+                                    <span>Successes:</span>
+                                    <input type="checkbox" id="deathSuccess1">
+                                    <input type="checkbox" id="deathSuccess2">
+                                    <input type="checkbox" id="deathSuccess3">
+                                </div>
+                                <div class="death-saves-row">
+                                    <span>Failures:</span>
+                                    <input type="checkbox" id="deathFail1">
+                                    <input type="checkbox" id="deathFail2">
+                                    <input type="checkbox" id="deathFail3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="combatResistances">Resistances</label>
+                            <textarea id="combatResistances"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="combatImmunities">Immunities</label>
+                            <textarea id="combatImmunities"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="combatVulnerabilities">Vulnerabilities</label>
+                            <textarea id="combatVulnerabilities"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="combatConditions">Conditions</label>
+                            <textarea id="combatConditions"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- INVENTORY TAB -->
+                <div id="tab-inventory" class="tab-panel">
+                    <div class="tab-grid">
+
+                        <div>
+                            <label for="invCP">Copper (CP)</label>
+                            <input type="number" id="invCP">
+                        </div>
+
+                        <div>
+                            <label for="invSP">Silver (SP)</label>
+                            <input type="number" id="invSP">
+                        </div>
+
+                        <div>
+                            <label for="invEP">Electrum (EP)</label>
+                            <input type="number" id="invEP">
+                        </div>
+
+                        <div>
+                            <label for="invGP">Gold (GP)</label>
+                            <input type="number" id="invGP">
+                        </div>
+
+                        <div>
+                            <label for="invPP">Platinum (PP)</label>
+                            <input type="number" id="invPP">
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="invArmor">Armor</label>
+                            <textarea id="invArmor"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="invWeapons">Weapons</label>
+                            <textarea id="invWeapons"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="invTools">Tools</label>
+                            <textarea id="invTools"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="invMisc">Misc Items</label>
+                            <textarea id="invMisc"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SPELLS TAB -->
+                <div id="tab-spells" class="tab-panel">
+                    <div class="tab-grid">
+
+                        <div>
+                            <label for="spellAbility">Spellcasting Ability</label>
+                            <input type="text" id="spellAbility">
+                        </div>
+
+                        <div>
+                            <label for="spellSaveDC">Spell Save DC</label>
+                            <input type="number" id="spellSaveDC">
+                        </div>
+
+                        <div>
+                            <label for="spellAttackBonus">Spell Attack Bonus</label>
+                            <input type="number" id="spellAttackBonus">
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <h3 style="margin: 10px 0 4px;">Spell Slots</h3>
+                        </div>
+
+                        <!-- LEVEL 1 -->
+                        <div>
+                            <label>Level 1 Slots</label>
+                            <input type="number" id="spell1Total" placeholder="Total">
+                            <input type="number" id="spell1Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 2 -->
+                        <div>
+                            <label>Level 2 Slots</label>
+                            <input type="number" id="spell2Total" placeholder="Total">
+                            <input type="number" id="spell2Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 3 -->
+                        <div>
+                            <label>Level 3 Slots</label>
+                            <input type="number" id="spell3Total" placeholder="Total">
+                            <input type="number" id="spell3Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 4 -->
+                        <div>
+                            <label>Level 4 Slots</label>
+                            <input type="number" id="spell4Total" placeholder="Total">
+                            <input type="number" id="spell4Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 5 -->
+                        <div>
+                            <label>Level 5 Slots</label>
+                            <input type="number" id="spell5Total" placeholder="Total">
+                            <input type="number" id="spell5Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 6 -->
+                        <div>
+                            <label>Level 6 Slots</label>
+                            <input type="number" id="spell6Total" placeholder="Total">
+                            <input type="number" id="spell6Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 7 -->
+                        <div>
+                            <label>Level 7 Slots</label>
+                            <input type="number" id="spell7Total" placeholder="Total">
+                            <input type="number" id="spell7Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 8 -->
+                        <div>
+                            <label>Level 8 Slots</label>
+                            <input type="number" id="spell8Total" placeholder="Total">
+                            <input type="number" id="spell8Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- LEVEL 9 -->
+                        <div>
+                            <label>Level 9 Slots</label>
+                            <input type="number" id="spell9Total" placeholder="Total">
+                            <input type="number" id="spell9Remaining" placeholder="Remaining">
+                        </div>
+
+                        <!-- KNOWN SPELLS -->
+                        <div style="grid-column: span 2;">
+                            <label for="spellKnown">Known Spells</label>
+                            <textarea id="spellKnown"></textarea>
+                        </div>
+
+                        <!-- PREPARED SPELLS -->
+                        <div style="grid-column: span 2;">
+                            <label for="spellPrepared">Prepared Spells</label>
+                            <textarea id="spellPrepared"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FEATS & TRAITS TAB -->
+                <div id="tab-feats" class="tab-panel">
+                    <div class="tab-grid">
+
+                        <div style="grid-column: span 2;">
+                            <label for="featsNotes">Feats</label>
+                            <textarea id="featsNotes"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="raceFeatures">Race Features</label>
+                            <textarea id="raceFeatures"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="classFeatures">Class Features</label>
+                            <textarea id="classFeatures"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="backgroundFeatures">Background Features</label>
+                            <textarea id="backgroundFeatures"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="proficienciesLanguages">Proficiencies & Languages</label>
+                            <textarea id="proficienciesLanguages"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="personalityTraits">Personality Traits</label>
+                            <textarea id="personalityTraits"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="ideals">Ideals</label>
+                            <textarea id="ideals"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="bonds">Bonds</label>
+                            <textarea id="bonds"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="flaws">Flaws</label>
+                            <textarea id="flaws"></textarea>
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <label for="backstory">Backstory</label>
+                            <textarea id="backstory"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ========================= -->
+                <!-- SUBCLASS SELECTION MODAL -->
+                <!-- ========================= -->
+
+                <!-- Dark overlay -->
+                <div id="subclassOverlay" class="modal-overlay" style="display:none;"></div>
+
+                <!-- Modal panel -->
+                <div id="subclassPanel" class="modal-panel parchment-window" style="display:none;">
+                    <button id="backSubclassBtn" class="subclass-back-btn">Back</button>
+
+                    <h2 class="modal-title">Choose Your Subclass</h2>
+
+                    <!-- Where subclass options will be injected -->
+                    <div id="subclassContent" class="subclass-list"></div>
+
+                    <div class="modal-actions">
+                        <button id="confirmSubclassBtn" class="confirm-button" type="button">Confirm Selection</button>
+                    </div>
+
+                </div>
+
+<script type="module">
+const guestMode = localStorage.getItem("guest_mode") === "true";
+
+// Extract ?character_id=### from URL and expose globally
+const urlParams = new URLSearchParams(window.location.search);
+const charIdFromUrl = urlParams.get("character_id");
+if (charIdFromUrl) {
+    window.CURRENT_CHARACTER_ID = parseInt(charIdFromUrl, 10);
+    console.log("Loaded character ID:", window.CURRENT_CHARACTER_ID);
+}
+
+import { apiRequest } from "/assets/api.js";
+
+let CURRENT_ACCOUNT_ID = null;
+
+let overlay;
+let settingsMenu;
+let fontMenu;
+let fontList;
+
+let META_RACES = [];
+let META_CLASSES = [];
+let META_BACKGROUNDS = [];
+
+// ---------------- ABILITY SCORE HELPERS ----------------
+
+function abilityMod(score) {
+    return Math.floor((score - 10) / 2);
+}
+
+function updateAbilityModDisplay(scoreInputId, modLabelId) {
+    const val = parseInt(document.getElementById(scoreInputId).value) || 10;
+    const mod = abilityMod(val);
+    const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+    document.getElementById(modLabelId).textContent = `Mod: ${modStr}`;
+}
+
+// Mapping abilities to their related skills
+const skillMap = {
+    STR: ["skillAthletics"],
+    DEX: ["skillAcrobatics", "skillSleight", "skillStealth"],
+    INT: ["skillArcana", "skillHistory", "skillInvestigation", "skillNature", "skillReligion"],
+    WIS: ["skillAnimal", "skillInsight", "skillMedicine", "skillPerception", "skillSurvival"],
+    CHA: ["skillDeception", "skillIntimidation", "skillPerformance", "skillPersuasion"]
+};
+
+function updateSkillsForAbility(abilityKey, score) {
+    const mod = abilityMod(score);
+    const skills = skillMap[abilityKey];
+    if (!skills) return;
+
+    skills.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = mod;
+    });
+}
+
+function wireAbilityModListeners() {
+    updateAbilityModDisplay("abStr", "abStrMod");
+    updateAbilityModDisplay("abDex", "abDexMod");
+    updateAbilityModDisplay("abCon", "abConMod");
+    updateAbilityModDisplay("abInt", "abIntMod");
+    updateAbilityModDisplay("abWis", "abWisMod");
+    updateAbilityModDisplay("abCha", "abChaMod");
+
+    document.getElementById("abStr").addEventListener("input", () => updateAbilityModDisplay("abStr", "abStrMod"));
+    document.getElementById("abDex").addEventListener("input", () => updateAbilityModDisplay("abDex", "abDexMod"));
+    document.getElementById("abCon").addEventListener("input", () => updateAbilityModDisplay("abCon", "abConMod"));
+    document.getElementById("abInt").addEventListener("input", () => updateAbilityModDisplay("abInt", "abIntMod"));
+    document.getElementById("abWis").addEventListener("input", () => updateAbilityModDisplay("abWis", "abWisMod"));
+    document.getElementById("abCha").addEventListener("input", () => updateAbilityModDisplay("abCha", "abChaMod"));
+}
+
+// ---------------- USER + METADATA ----------------
+
+function getCurrentUserId() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.id || null;
+}
+
+async function loadMetadata() {
+    async function safeGet(url) {
+        try {
+            return await apiRequest(url, "GET");
+        } catch (err) {
+            console.error("Metadata load failed:", url, err);
+            return [];
+        }
+    }
+
+    META_RACES       = await safeGet("/meta/races");
+    META_CLASSES     = await safeGet("/meta/classes");
+    META_BACKGROUNDS = await safeGet("/meta/backgrounds");
+
+    const raceSelect = document.getElementById("charRaceSelect");
+    const classSelect = document.getElementById("charClassSelect");
+    const backgroundSelect = document.getElementById("charBackgroundSelect");
+
+    function populate(select, list) {
+        if (!select) return;
+        list.forEach(item => {
+            const opt = document.createElement("option");
+            opt.value = item.id;
+            opt.textContent = item.name;
+            select.appendChild(opt);
+        });
+    }
+
+    populate(raceSelect, META_RACES);
+    populate(classSelect, META_CLASSES);
+    populate(backgroundSelect, META_BACKGROUNDS);
+}
+
+function safeScore(id) {
+    const v = parseInt(document.getElementById(id).value);
+    return isNaN(v) ? 10 : v;
+}
+
+// ---------------- CREATE CHARACTER ----------------
+
+const createBtn = document.getElementById("createCharacterBtn");
+if (createBtn) {
+    createBtn.addEventListener("click", async () => {
+        if (guestMode) {
+            const payload = {
+                name: document.getElementById("charNameInput").value,
+                gender: document.getElementById("charGenderInput").value,
+                race_id: parseInt(document.getElementById("charRaceSelect").value),
+                class_id: parseInt(document.getElementById("charClassSelect").value),
+                background_id: document.getElementById("charBackgroundSelect").value
+                    ? parseInt(document.getElementById("charBackgroundSelect").value)
+                    : null,
+
+                str: safeScore("strInput"),
+                dex: safeScore("dexInput"),
+                con: safeScore("conInput"),
+                int: safeScore("intInput"),
+                wis: safeScore("wisInput"),
+                cha: safeScore("chaInput")
+            };
+
+            const wrapper = document.getElementById("sheetWrapper");
+            if (wrapper) wrapper.classList.remove("hidden");
+            const creator = document.querySelector(".creator-panel");
+            if (creator) creator.classList.add("hidden");
+
+            document.getElementById("sheetName").textContent = payload.name || "Guest Character";
+            document.getElementById("sheetSubtitle").textContent =
+                `Race ID: ${payload.race_id || "?"} | Class ID: ${payload.class_id || "?"}`;
+            document.getElementById("sheetMeta").textContent = "Guest Mode";
+
+            document.getElementById("ovName").value = payload.name || "";
+            document.getElementById("ovPlayerName").value = "Guest";
+            document.getElementById("ovGender").value = payload.gender || "";
+            document.getElementById("ovRaceId").value = payload.race_id || "";
+            document.getElementById("ovClassId").value = payload.class_id || "";
+            document.getElementById("ovBackgroundId").value = payload.background_id || "";
+            document.getElementById("ovLevel").value = 1;
+            document.getElementById("ovAlignment").value = "";
+            document.getElementById("ovXP").value = 0;
+
+            document.getElementById("abStr").value = payload.str;
+            document.getElementById("abDex").value = payload.dex;
+            document.getElementById("abCon").value = payload.con;
+            document.getElementById("abInt").value = payload.int;
+            document.getElementById("abWis").value = payload.wis;
+            document.getElementById("abCha").value = payload.cha;
+
+            wireAbilityModListeners();
+            return;
+        }
+
+        const payload = {
+            account_id: localStorage.getItem("account_id"),
+            name: document.getElementById("charNameInput").value,
+            gender: document.getElementById("charGenderInput").value,
+            race_id: parseInt(document.getElementById("charRaceSelect").value),
+            class_id: parseInt(document.getElementById("charClassSelect").value),
+            background_id: document.getElementById("charBackgroundSelect").value
+                ? parseInt(document.getElementById("charBackgroundSelect").value)
+                : null,
+
+            str: safeScore("strInput"),
+            dex: safeScore("dexInput"),
+            con: safeScore("conInput"),
+            int: safeScore("intInput"),
+            wis: safeScore("wisInput"),
+            cha: safeScore("chaInput"),
+
+            experience: 0,
+            proficiency_bonus: 2
+        };
+
+        try {
+            const result = await apiRequest("/characters/create", "POST", payload);
+
+            if (result.success) {
+                window.location.href = `/assets/create_character.html?character_id=${result.character_id}`;
+            }
+        } catch (err) {
+            console.error("Character creation failed:", err);
+            alert("Failed to create character.");
+        }
+    });
+}
+
+// ---------------- STARTUP ----------------
+
+async function startup() {
+    if (guestMode) {
+        const creator = document.querySelector(".creator-panel");
+        const sheetWrapper = document.getElementById("sheetWrapper");
+
+        if (creator) creator.classList.remove("hidden");
+        if (sheetWrapper) sheetWrapper.classList.add("hidden");
+
+        await loadMetadata();
+        const saveBtn = document.getElementById("saveCharacterBtn");
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerText = "Guest Mode (Cannot Save)";
+        }
+        return;
+    }
+
+    CURRENT_ACCOUNT_ID = getCurrentUserId();
+    if (!CURRENT_ACCOUNT_ID) {
+        window.location.href = "/assets/login.html";
+        return;
+    }
+
+    await loadMetadata();
+
+    // If no character ID in URL, show creator; otherwise let character_load.js
+    // handle loading + toggling the sheet UI.
+    if (!window.CURRENT_CHARACTER_ID) {
+        const creator = document.querySelector(".creator-panel");
+        const sheetWrapper = document.getElementById("sheetWrapper");
+
+        if (creator) creator.classList.remove("hidden");
+        if (sheetWrapper) sheetWrapper.classList.add("hidden");
+    }
+}
+
+// ---------------- NAVIGATION ----------------
+
+const backBtn = document.getElementById("backToListBtn");
+if (backBtn) {
+    backBtn.addEventListener("click", () => {
+        window.location.href = "/assets/characters.html";
+    });
+}
+
+// ---------------- SETTINGS + FONT MENUS ----------------
+
+window.addEventListener("DOMContentLoaded", () => {
+    overlay = document.getElementById("overlay");
+    settingsMenu = document.getElementById("settingsMenu");
+    fontMenu = document.getElementById("fontMenu");
+    fontList = document.getElementById("fontList");
+
+    if (overlay) overlay.style.display = "none";
+    if (settingsMenu) settingsMenu.style.display = "none";
+    if (fontMenu) fontMenu.style.display = "none";
+
+    const settingsButton = document.getElementById("settingsButton");
+    if (settingsButton) {
+        settingsButton.addEventListener("click", (e) => {
+            if (!e.isTrusted) return;
+            if (overlay) overlay.style.display = "block";
+            if (settingsMenu) settingsMenu.style.display = "flex";
+        });
+    }
+
+    const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener("click", () => {
+            if (settingsMenu) settingsMenu.style.display = "none";
+            if (overlay) overlay.style.display = "none";
+        });
+    }
+
+    const logoutBtn2 = document.getElementById("logoutBtn2");
+    if (logoutBtn2) {
+        logoutBtn2.addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "/assets/login.html";
+        });
+    }
+
+    const openFontMenuBtn = document.getElementById("openFontMenuBtn");
+    if (openFontMenuBtn) {
+        openFontMenuBtn.addEventListener("click", (e) => {
+            if (!e.isTrusted) return;
+            if (settingsMenu) settingsMenu.style.display = "none";
+            if (fontMenu) fontMenu.style.display = "flex";
+            loadFontList();
+        });
+    }
+
+    const closeFontMenuBtn = document.getElementById("closeFontMenuBtn");
+    if (closeFontMenuBtn) {
+        closeFontMenuBtn.addEventListener("click", () => {
+            if (fontMenu) fontMenu.style.display = "none";
+            if (overlay) overlay.style.display = "none";
+        });
+    }
+
+    startup();
+});
+
+// Load fonts dynamically
+function loadFontList() {
+    if (!fontList) return;
+
+    const fonts = ["Firlest", "PfefferMediaeval", "Gondens", "ComicSans"];
+
+    fontList.innerHTML = "";
+
+    fonts.forEach(font => {
+        const btn = document.createElement("button");
+        btn.textContent = font;
+        btn.style.fontFamily = font;
+
+        btn.addEventListener("click", () => {
+            document.documentElement.style.setProperty("--global-font", font);
+        });
+
+        fontList.appendChild(btn);
+    });
+}
+</script>
+
+    <script type="module" src="/assets/character_load.js"></script>
+    <script type="module" src="/assets/character_save.js"></script>
+    <script src="/assets/tabs.js"></script>
+    
+    
+    
+</body>
+</html>

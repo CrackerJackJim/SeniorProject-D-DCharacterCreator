@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Characters</title>
+    <link rel="stylesheet" href="/assets/style.css">
+
+    <style>
+        body {
+            font-family: var(--global-font, 'Firlest');
+            background: url('/assets/images/Character_Creation_Background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #2b1d0f;
+            margin: 0;
+        }
+
+        /* MAIN PARCHMENT PANEL */
+        .characters-container {
+            width: 100%;
+            max-width: 1400px;
+            min-width: 900px;
+            aspect-ratio: 16 / 9;
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            padding: 100px 80px;
+            margin: 60px auto;
+            border-radius: 24px;
+            box-shadow: 0 0 55px rgba(0,0,0,0.75);
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .characters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .characters-header h1 {
+            font-size: 54px;
+            margin: 0;
+            color: #2b1d0f;
+        }
+
+        /* MATCH AUTH BUTTON STYLE */
+        .top-buttons button {
+            background-color: #c8b48a;
+            border: 3px solid #5a3e1b;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 26px;
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-family: var(--global-font), serif;
+            margin-left: 10px;
+        }
+
+        .top-buttons button:hover {
+            background-color: #d6c49a;
+        }
+
+        /* GRID */
+        .character-list {
+            display: grid;
+            grid-template-columns: repeat(2, max-content);
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+
+        .character-card {
+            width: 360px;
+            min-height: 240px;
+            padding: 28px 32px;
+
+            background: url('/assets/images/Selection.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 18px;
+            box-shadow: 0 0 35px rgba(0,0,0,0.55);
+
+            display: flex;
+            flex-direction: column;   /* back to single column */
+            justify-content: space-between;
+
+            color: #2b1d0f;
+            cursor: pointer;
+            transition: transform 0.15s ease-in-out, box-shadow 0.2s ease;
+        }
+
+        .character-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 45px rgba(0,0,0,0.65);
+        }
+
+        .character-name {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            text-align: left;
+        }
+
+        .character-meta {
+            font-size: 18px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+            text-align: left;
+        }
+
+        .character-submeta {
+            font-size: 15px;
+            margin-bottom: 2px;
+            opacity: 0.75;
+            text-align: left;
+        }
+
+        /* BUTTON ROW */
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+        }
+
+        .open-btn {
+            background-color: #c8b48a;
+            border: 3px solid #5a3e1b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2b1d0f;
+            font-size: 18px;
+            transition: background-color 0.2s ease;
+        }
+
+        .open-btn:hover {
+            background-color: #d6c49a;
+        }
+
+        .delete-btn {
+            background-color: #8b0000;
+            color: white;
+            border: 3px solid #5a0000;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            transition: background-color 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #b30000;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="characters-container">
+    <div class="characters-header">
+        <h1>Your Characters</h1>
+        <div class="top-buttons">
+            <button id="newCharacterBtn">New Character</button>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </div>
+
+    <div id="characterList" class="character-list"></div>
+</div>
+
+<script type="module">
+import { apiRequest } from "/assets/api.js";
+
+const listEl = document.getElementById("characterList");
+const newBtn = document.getElementById("newCharacterBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// Date format for character card
+function formatDate(dateString) {
+    if (!dateString) return "Unknown";
+    return new Date(dateString).toLocaleDateString();
+}
+
+function getCurrentUserId() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.id || null;
+}
+
+async function loadCharacters() {
+    const accountId = getCurrentUserId();
+    if (!accountId) {
+        window.location.href = "/assets/login.html";
+        return;
+    }
+
+    listEl.innerHTML = "<p>Loading characters...</p>";
+
+    try {
+        const chars = await apiRequest(`/characters/account/${accountId}`, "GET");
+        if (!chars || chars.length === 0) {
+            listEl.innerHTML = "<p>No characters yet. Create one!</p>";
+            return;
+        }
+
+        listEl.innerHTML = "";
+        chars.forEach(c => {
+            const card = document.createElement("div");
+            card.className = "character-card";
+            card.dataset.id = c.CharacterID;
+
+            card.innerHTML = `
+                <div class="card-left">
+                    <div class="character-name">${c.Name}</div>
+                    <div class="character-meta">Level ${c.Level} ${c.ClassName}</div>
+                    <div class="character-submeta">${c.RaceName} • ${c.BackgroundName || "No Background"}</div>
+                    <div class="character-submeta">Created: ${formatDate(c.CreatedDate)}</div>
+                    <div class="character-submeta">Last Edited: ${formatDate(c.LastEdited)}</div>
+
+                    <div class="card-actions">
+                        <span class="open-btn">Open</span>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+
+                <div class="card-right"></div>
+            `;
+
+            // Entire card opens character
+            card.addEventListener("click", () => {
+                window.location.href = `/assets/create_character.html?character_id=${c.CharacterID}`;
+            });
+
+            // OPEN BUTTON
+            card.querySelector(".open-btn").addEventListener("click", (e) => {
+                e.stopPropagation();
+                window.location.href = `/assets/create_character.html?character_id=${c.CharacterID}`;
+            });
+
+            // DELETE BUTTON
+            card.querySelector(".delete-btn").addEventListener("click", async (e) => {
+                e.stopPropagation();
+
+                const sure = confirm("Are you sure you want to delete this?");
+                if (!sure) return;
+
+                try {
+                    const result = await apiRequest(`/characters/${c.CharacterID}/delete`, "DELETE");
+                    if (result.success) {
+                        card.remove();
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete character.");
+                }
+            });
+
+            listEl.appendChild(card);
+        });
+    } catch (err) {
+        console.error(err);
+        listEl.innerHTML = "<p>Failed to load characters.</p>";
+    }
+}
+
+newBtn.addEventListener("click", () => {
+    localStorage.removeItem("basicCharacterInfoEntered");
+    localStorage.removeItem("characterCreationComplete");
+    localStorage.removeItem("lastCreatedCharacterId");
+    window.location.href = "/assets/create_character.html";
+});
+
+logoutBtn.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "/assets/login.html";
+});
+
+loadCharacters();
+</script>
+
+</body>
+</html>
