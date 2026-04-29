@@ -1,5 +1,6 @@
 // assets/character_load.js
 import { apiRequest } from "./api.js";
+import { saveCharacter } from "./character_save.js";
 
 function getCharacterIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -700,10 +701,15 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmLevelUpBtn.addEventListener("click", async () => {
             const roll = parseInt(document.getElementById("manualHpInput").value);
 
+            // 1. Save current sheet FIRST (this preserves ability scores)
+            await saveCharacter();
+
+            // 2. Apply level-up
             const result = await apiRequest(`/characters/${window.CURRENT_CHARACTER_ID}/level_up`, "POST", {
                 manual_roll: roll
             });
 
+            // 3. Update HP locally
             const hpEl    = document.getElementById("combatHP");
             const maxHpEl = document.getElementById("combatMaxHP");
 
@@ -712,6 +718,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             updateCritRange();
             closeLevelUpMenu();
+
+            // 4. Reload AFTER saving + level-up
             location.reload();
         });
     }
@@ -787,11 +795,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ABILITY SCORE LIVE UPDATES → mods + skills + HP (for CON)
     ["Str","Dex","Con","Int","Wis","Cha"].forEach(ab => {
         const el = document.getElementById(`ab${ab}`);
         if (el) {
             el.addEventListener("input", () => {
+
+                // Clamp between 1 and 30
+                let val = parseInt(el.value) || 1;
+                if (val > 30) val = 30;
+                if (val < 1)  val = 1;
+                el.value = val;
+
                 updateAbilityMods();
                 updateAllSkills();
 

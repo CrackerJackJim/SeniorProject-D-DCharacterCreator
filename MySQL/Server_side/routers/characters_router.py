@@ -836,22 +836,25 @@ async def select_subclass(character_id: int, data: dict):
     return {"success": True}
 
 
-
 @router.post("/{character_id}/level_up")
 async def level_up(character_id: int, data: dict):
     manual_roll = safe_int(data.get("manual_roll"))
     if manual_roll is None:
         raise HTTPException(status_code=400, detail="Missing manual_roll")
 
-    # Get character + CON score
+    # Fetch character level
     char = await fetch_one(
         "SELECT Level FROM characters WHERE CharacterID = %s",
         (character_id,)
     )
+
+    # Fetch CON score (DO NOT RESET ABILITY SCORES)
     abilities = await fetch_one(
         "SELECT ConScore FROM abilityscores WHERE CharacterID = %s",
         (character_id,)
     )
+
+    # Fetch combat stats
     combat = await fetch_one(
         "SELECT MaxHP, CurrentHP, HitDiceTotal, HitDiceRemaining FROM combat_stats WHERE CharacterID = %s",
         (character_id,)
@@ -863,10 +866,12 @@ async def level_up(character_id: int, data: dict):
     # Calculate CON modifier
     con_mod = (abilities["ConScore"] - 10) // 2
 
+    # HP gained from level-up
     gained_hp = manual_roll + con_mod
     if gained_hp < 1:
         gained_hp = 1
 
+    # New values
     new_level = char["Level"] + 1
     new_max_hp = combat["MaxHP"] + gained_hp
     new_current_hp = combat["CurrentHP"] + gained_hp
@@ -882,7 +887,8 @@ async def level_up(character_id: int, data: dict):
     # Update combat stats
     await execute(
         """
-        UPDATE combat_stats SET
+        UPDATE combat_stats
+        SET 
             MaxHP = %s,
             CurrentHP = %s,
             HitDiceTotal = %s,
@@ -898,10 +904,10 @@ async def level_up(character_id: int, data: dict):
         )
     )
 
+    # Return updated HP so frontend can update without losing ability scores
     return {
         "success": True,
         "new_level": new_level,
-        "gained_hp": gained_hp,
         "new_max_hp": new_max_hp,
         "new_current_hp": new_current_hp
     }

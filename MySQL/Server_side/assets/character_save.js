@@ -212,3 +212,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     btn.addEventListener("click", saveCharacter);
 });
+
+export { saveCharacter };

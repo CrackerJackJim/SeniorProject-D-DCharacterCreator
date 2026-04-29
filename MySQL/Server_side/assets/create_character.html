@@ -811,32 +811,32 @@
                     <div class="abilities-grid">
                         <div class="ability-edit-box">
                             <div class="ability-name">STR</div>
-                            <input type="number" id="abStr" min="1" max="20">
+                            <input type="number" id="abStr" min="1" max="30">
                             <div class="ability-mod" id="abStrMod"></div>
                         </div>
                         <div class="ability-edit-box">
                             <div class="ability-name">DEX</div>
-                            <input type="number" id="abDex" min="1" max="20">
+                            <input type="number" id="abDex" min="1" max="30">
                             <div class="ability-mod" id="abDexMod"></div>
                         </div>
                         <div class="ability-edit-box">
                             <div class="ability-name">CON</div>
-                            <input type="number" id="abCon" min="1" max="20">
+                            <input type="number" id="abCon" min="1" max="30">
                             <div class="ability-mod" id="abConMod"></div>
                         </div>
                         <div class="ability-edit-box">
                             <div class="ability-name">INT</div>
-                            <input type="number" id="abInt" min="1" max="20">
+                            <input type="number" id="abInt" min="1" max="30">
                             <div class="ability-mod" id="abIntMod"></div>
                         </div>
                         <div class="ability-edit-box">
                             <div class="ability-name">WIS</div>
-                            <input type="number" id="abWis" min="1" max="20">
+                            <input type="number" id="abWis" min="1" max="30">
                             <div class="ability-mod" id="abWisMod"></div>
                         </div>
                         <div class="ability-edit-box">
                             <div class="ability-name">CHA</div>
-                            <input type="number" id="abCha" min="1" max="20">
+                            <input type="number" id="abCha" min="1" max="30">
                             <div class="ability-mod" id="abChaMod"></div>
                         </div>
                     </div>
@@ -1121,34 +1121,39 @@
                 <div id="tab-combat" class="tab-panel">
                     <div class="tab-grid">
 
+                        <!-- ========================= -->
+                        <!-- HEALTH BLOCK (GROUPED)   -->
+                        <!-- ========================= -->
+                        <div style="grid-column: 1 / span 2; padding: 12px; border: 2px solid #5a3e1b; border-radius: 10px; background:#c8b48a;">
+                            <h3 style="margin:0 0 10px 0; font-size:20px; color:#2b1d0f;">Health</h3>
+
+                            <div style="display:flex; gap:20px;">
+
+                                <div style="flex:1;">
+                                    <label for="combatMaxHP">Max HP</label>
+                                    <input type="number" id="combatMaxHP">
+                                </div>
+
+                                <div style="flex:1;">
+                                    <label for="combatHP">Current HP</label>
+                                    <input type="number" id="combatHP">
+                                </div>
+
+                                <div style="flex:1;">
+                                    <label for="combatTempHP">Temporary HP</label>
+                                    <input type="number" id="combatTempHP">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ========================= -->
+                        <!-- OTHER COMBAT STATS       -->
+                        <!-- ========================= -->
+
                         <div>
                             <label for="combatAC">Armor Class</label>
                             <input type="number" id="combatAC">
-                        </div>
-
-                        <div class="combat-row">
-                            <label for="combatPassivePerception">Passive Perception</label>
-                            <input type="number" id="combatPassivePerception" value="0">
-                        </div>
-
-                        <div class="combat-row">
-                            <label for="combatPassiveInvestigation">Passive Investigation</label>
-                            <input type="number" id="combatPassiveInvestigation" value="0">
-                        </div>
-
-                        <div class="combat-row">
-                            <label for="combatPassiveInsight">Passive Insight</label>
-                            <input type="number" id="combatPassiveInsight" value="0">
-                        </div>
-
-                        <div class="combat-field">
-                            <label for="combatMaxHP">Max HP</label>
-                            <input type="number" id="combatMaxHP" readonly>
-                        </div>
-
-                        <div>
-                            <label for="combatCritRange">Critical Hit Range</label>
-                            <input type="text" id="combatCritRange" readonly>
                         </div>
 
                         <div>
@@ -1157,33 +1162,78 @@
                         </div>
 
                         <div>
-                            <label for="combatHP">Current HP</label>
-                            <input type="number" id="combatHP">
-                        </div>
-
-                        <div>
-                            <label for="combatTempHP">Temporary HP</label>
-                            <input type="number" id="combatTempHP">
-                        </div>
-
-                        <div>
                             <label for="combatSpeed">Speed</label>
                             <input type="number" id="combatSpeed">
                         </div>
 
                         <div>
-                            <label for="combatHitDice">Hit Dice (Total)</label>
+                            <label for="combatSpeedClimb">Climb Speed</label>
+                            <input type="number" id="combatSpeedClimb">
+                        </div>
+
+                        <div>
+                            <label for="combatSpeedSwim">Swim Speed</label>
+                            <input type="number" id="combatSpeedSwim">
+                        </div>
+
+                        <div>
+                            <label for="combatSpeedFly">Fly Speed</label>
+                            <input type="number" id="combatSpeedFly">
+                        </div>
+
+                        <div>
+                            <label for="combatHitDice">Hit Dice Total</label>
                             <input type="number" id="combatHitDice">
                         </div>
 
                         <div>
-                            <label for="combatHitDiceRemaining">Hit Dice (Remaining)</label>
+                            <label for="combatHitDiceRemaining">Hit Dice Remaining</label>
                             <input type="number" id="combatHitDiceRemaining">
                         </div>
 
                         <div>
                             <label for="combatProfBonus">Proficiency Bonus</label>
-                            <input type="number" id="combatProfBonus">
+                            <input type="number" id="combatProfBonus" readonly>
+                        </div>
+
+                        <div>
+                            <label for="combatCritRange">Critical Range</label>
+                            <input type="text" id="combatCritRange" readonly>
+                        </div>
+
+                        <div>
+                            <label for="combatPassivePerception">Passive Perception</label>
+                            <input type="number" id="combatPassivePerception">
+                        </div>
+
+                        <div>
+                            <label for="combatPassiveInvestigation">Passive Investigation</label>
+                            <input type="number" id="combatPassiveInvestigation">
+                        </div>
+
+                        <div>
+                            <label for="combatPassiveInsight">Passive Insight</label>
+                            <input type="number" id="combatPassiveInsight">
+                        </div>
+
+                        <div style="grid-column: 1 / span 2;">
+                            <label for="combatResistances">Resistances</label>
+                            <textarea id="combatResistances"></textarea>
+                        </div>
+
+                        <div style="grid-column: 1 / span 2;">
+                            <label for="combatImmunities">Immunities</label>
+                            <textarea id="combatImmunities"></textarea>
+                        </div>
+
+                        <div style="grid-column: 1 / span 2;">
+                            <label for="combatVulnerabilities">Vulnerabilities</label>
+                            <textarea id="combatVulnerabilities"></textarea>
+                        </div>
+
+                        <div style="grid-column: 1 / span 2;">
+                            <label for="combatConditions">Conditions</label>
+                            <textarea id="combatConditions"></textarea>
                         </div>
 
                         <!-- Death Saves -->
